@@ -1,0 +1,78 @@
+* {
+	margin: 0;
+}
+html, body {
+	height: 100%;
+}
+.wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -4em;
+}
+.footer, .push {
+	height: 4em;
+	clear: both;
+}
+
+#heading {
+   padding: 20px;
+   height: 30px;
+   margin-bottom: 10px;
+   background: #dddddd;
+   border: 1px solid darkGray;
+}
+
+#menu {
+   border: thin solid lightGray;
+   padding: 5px;
+   width: 200px;
+   background: #eeeeee;
+}
+
+#content {
+   padding: 5px;
+   border: thin solid lightGray;
+   background: white;
+   position: absolute;
+   right: 8px;
+   left: 210px;
+   height: 400px;
+   top: 137px;
+}
+
+#updateStatus {
+   color: green
+}
+#createStatus {
+   color: green
+}
+
+.header {
+   font-size: 1.4em;
+   font-style: italic;
+   font-family: Palatino;
+   text-align: center;
+}
+
+.taskImage {
+   padding: 5px;
+   text-align: center;
+}
+
+.taskImageSelected {
+   padding: 5px;
+   text-align: center;
+   background: #fefeef;
+   border: thin solid lightGray;
+}
+
+.welcome {
+   font-style: italic;
+   font-family: Palatino;
+}
+
+.welcomeImage {
+   margin-top: 10px;
+   text-align: center;
+}

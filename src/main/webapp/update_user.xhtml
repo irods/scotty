@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+<head><title>IGNORED</title></head>
+<body>
+
+<ui:composition template="/WEB-INF/templates/site.xhtml">
+    <ui:define name="content">
+    <h:form>
+    	<div id="updateStatus">
+        	<h:panelGrid id="status">
+					<h:outputLabel value="#{userController.statusMsg}"/>
+			</h:panelGrid>
+			<p:messages id="messages" showSummary="true" showDetail="false" autoUpdate="true"/> 
+        </div>
+        
+		<h:panelGrid id="userStuff" columns="2" style="margin-bottom:10px" cellpadding="5">
+			<h:outputLabel value="#{msg['user.id']}:"/>
+            <h:outputLabel value="#{userController.userId}"/>
+            <h:outputLabel value="#{msg['user.name']}:"/>
+            <h:outputLabel value="#{userController.userName}"/>
+            <h:outputLabel value="#{msg['user.type']}:"/>
+            <p:selectOneMenu id="types" value="#{userController.selectedType}" size="1">
+            	<f:selectItems value="#{userController.userTypes}" var="g" 
+            		itemValue="#{g}" itemLabel="#{g}"/>
+            </p:selectOneMenu>
+            <h:outputLabel value="#{msg['user.zone']}:"/>
+            <h:outputLabel value="#{userController.selectedZone}" />
+            <h:outputLabel value="#{msg['user.comment']}:"/>
+            <p:inputText value="#{userController.userComment}" size="75"/>
+            <h:outputLabel value="#{msg['user.info']}:"/>
+            <p:inputText value="#{userController.userInfo}" size="75"/>
+            <h:outputLabel value="#{msg['user.create']}:"/>
+            <h:outputText value="#{userController.createTime}">
+            	<f:convertDateTime pattern="M/d/yyyy h:mm:ss aaa"/>
+            </h:outputText>
+            <h:outputLabel value="#{msg['user.modify']}:"/>
+            <h:outputText value="#{userController.modifyTime}">
+            	<f:convertDateTime pattern="M/d/yyyy h:mm:ss aaa"/>
+            </h:outputText>
+            
+            <h:outputLabel for="pwd1" value="#{msg['user.password']}:" />  
+            <p:password id="pwd1" value="#{userController.userPassword}" match="pwd2" label="Password"
+            	title="Password should be entered ony if you wish to add a or change the current password."/>  
+  		
+            <h:outputLabel for="pwd2" value="#{msg['user.verify_password']}:" />  
+            <p:password id="pwd2" value="#{userController.userPassword}" label="Verify Password"/> 
+             
+        </h:panelGrid>
+        <p:tooltip for="pwd1" showEvent="focus" hideEvent="blur" />
+        <h:inputHidden value="#{userController.userId}"/>
+        <h:inputHidden value="#{userController.userName}"/>
+        <h:inputHidden value="#{userController.createTime}">
+        	<f:convertDateTime pattern="M/d/yyyy h:mm:ss aaa"/>
+        </h:inputHidden>
+        <h:inputHidden value="#{userController.modifyTime}">
+        	<f:convertDateTime pattern="M/d/yyyy h:mm:ss aaa"/>
+        </h:inputHidden>
+        <h:panelGrid id="actionButtons" columns="3" style="margin-bottom:10px;float:left" cellpadding="5">
+            	<h:button value="#{msg['user.button.cancel']}" outcome="user_admin" />
+            	<h:commandButton value="#{msg['user.button.update']}" action="#{userController.doUpdateUser}"></h:commandButton>
+		</h:panelGrid>
+    </h:form>
+    </ui:define>
+</ui:composition>
+
+</body>
+</html>

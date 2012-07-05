@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:#login.xhtml" PATH="/login.xhtml"
+  SHAPE="344,112,50,41" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#login.xhtml:0" NAME="item"
+   PATH="/login.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT
+    ID="success:#{loginController.validateUser}:#dashboard.xhtml"
+    NAME="output" PATH="/dashboard.xhtml"
+    TARGET="rules:#dashboard.xhtml"
+    TITLE="#{loginController.validateUser}:success" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:" SHAPE="40,88,53,42" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::0" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT
+    ID="logout:#{loginController.logoutUser}:#login.xhtml" NAME="output"
+    PATH="/login.xhtml" TARGET="rules:#login.xhtml"
+    TITLE="#{loginController.logoutUser}:logout" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#users.xhtml" PATH="/users.xhtml"
+  SHAPE="256,304,50,73" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#users.xhtml:0" NAME="item"
+   PATH="/users.xhtml" SHAPE="256,310,47,31" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT
+    ID="update:#{userController.goToUpdateAdminUser}:#update_user.xhtml"
+    NAME="output" PATH="/update_user.xhtml"
+    TARGET="rules:#update_user.xhtml"
+    TITLE="#{userController.goToUpdateAdminUser}:update" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID="update:#{userController.goToUpdateRodsUser}:#update_user.xhtml"
+    NAME="output1" PATH="/update_user.xhtml"
+    TARGET="rules:#update_user.xhtml"
+    TITLE="#{userController.goToUpdateRodsUser}:update" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+  <PROCESS-ITEM ID="rules:#users.xhtml:1" NAME="item1"
+   PATH="/users.xhtml" SHAPE="32,214,47,15" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT
+    ID="create:#{userController.goToCreateUser}:#create_user.xhtml"
+    NAME="output" PATH="/create_user.xhtml"
+    TARGET="rules:#create_user.xhtml"
+    TITLE="#{userController.goToCreateUser}:create" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#update_user.xhtml" PATH="/update_user.xhtml"
+  SHAPE="608,320,50,25" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#create_user.xhtml" PATH="/create_user.xhtml"
+  SHAPE="608,360,50,25" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#dashboard.xhtml" PATH="/dashboard.xhtml"
+  SHAPE="640,128,50,25" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::1" SHAPE="48,280,53,42" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::1" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="user_admin::#users.xhtml" NAME="output"
+    PATH="/users.xhtml" TARGET="rules:#users.xhtml" TITLE="user_admin" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+</PROCESS>

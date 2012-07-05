@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	
+<head><title>IGNORED</title></head>
+<body>
+
+<ui:composition template="/WEB-INF/templates/site.xhtml">
+    <ui:define name="content">
+    <h:form>
+    	<div id="removeStatus">
+        	<h:panelGrid id="status">
+					<h:outputLabel value="#{userController.statusMsg}"/>
+					<p:messages id="messages" showSummary="true" showDetail="false" autoUpdate="true"/>
+			</h:panelGrid>
+        </div>
+    	<h:commandButton value="#{msg['user.button.create']}" action="#{userController.goToCreateUser}"></h:commandButton>
+    	<h:dataTable value="#{userController.adminUsersList}" var="user">
+    		<f:facet name="caption">iRODS Admin Users</f:facet>
+    		<h:column>
+    			<f:facet name="header">Id</f:facet>
+    			#{user.id}
+    		</h:column>
+    		<h:column>
+    			<f:facet name="header">Login</f:facet>
+    			#{user.name}
+    		</h:column>
+    		<h:column>
+    			<f:facet name="header">Zone</f:facet>
+    			#{user.zone}
+    		</h:column>
+    		<h:column>
+    			<f:facet name="header">Create Time</f:facet>
+    			<h:outputText value="#{user.createTime}">
+    				<f:convertDateTime pattern="M/d/yyyy h:mm:ss aaa"/>
+    			</h:outputText>
+    		</h:column>
+    		<h:column>
+    			<h:commandButton value="#{msg['user.button.update']}" action="#{userController.goToUpdateAdminUser}"></h:commandButton>
+    		</h:column>
+    		<h:column>
+    			<h:commandButton value="#{msg['user.button.remove']}" action="#{userController.doRemoveAdminUser}"
+    				onclick="if (!confirm('Are you sure you wish to remove user: &quot;#{user.name}&quot;?')) return false;"></h:commandButton>
+    		</h:column>
+    	</h:dataTable>
+    	
+    	<h:dataTable value="#{userController.rodsUsersList}" var="ruser">
+    		<f:facet name="caption">iRODS Users</f:facet>
+    		<h:column>
+    			<f:facet name="header">Id</f:facet>
+    			#{ruser.id}
+    		</h:column>
+    		<h:column>
+    			<f:facet name="header">Login</f:facet>
+    			#{ruser.name}
+    		</h:column>
+    		<h:column>
+    			<f:facet name="header">Zone</f:facet>
+    			#{ruser.zone}
+    		</h:column>
+    		<h:column>
+    			<f:facet name="header">Create Time</f:facet>
+    			<h:outputText value="#{ruser.createTime}">
+    				<f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
+    			</h:outputText>
+    		</h:column>
+    		<h:column>
+    			<h:commandButton value="#{msg['user.button.update']}" action="#{userController.goToUpdateRodsUser}"></h:commandButton>
+    		</h:column>
+    		<h:column>
+    			<h:commandButton value="#{msg['user.button.remove']}" action="#{userController.doRemoveRodsUser}"
+    			onclick="if (!confirm('Are you sure you wish to remove user: &quot;#{ruser.name}&quot;?')) return false;"></h:commandButton>
+    		</h:column>
+    	</h:dataTable>
+    </h:form>
+    </ui:define>
+</ui:composition>
+
+</body>
+</html>

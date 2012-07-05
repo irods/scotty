@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+	
+<head><title>IGNORED</title></head>
+<body>
+
+<ui:composition template="/WEB-INF/templates/site.xhtml">
+    <ui:define name="content">
+    <h:form>
+    	<div id="updateStatus">
+        	<h:panelGrid id="status">
+					<h:outputLabel value="#{userController.statusMsg}"/>
+			</h:panelGrid>
+        </div>
+        
+		<h:panelGrid id="userStuff" columns="2" style="margin-bottom:10px" cellpadding="5">
+			<h:outputLabel value="#{msg['user.id']}:"/>
+            <h:outputLabel value="#{userController.userId}"/>
+            <h:outputLabel value="#{msg['user.name']}:"/>
+            <h:outputLabel value="#{userController.userName}"/>
+            <h:outputLabel value="#{msg['user.type']}:"/>
+            <h:selectOneMenu id="types" value="#{userController.selectedType}" size="1">
+            	<f:selectItems value="#{userController.userTypes}" var="g" 
+            		itemValue="#{g}" itemLabel="#{g}"/>
+            </h:selectOneMenu>
+            <h:outputLabel value="#{msg['user.zone']}:"/>
+            <h:selectOneMenu id="zones" value="#{userController.selectedZone}" size="1">
+            	<f:selectItems value="#{zoneController.userZones}" var="z" 
+            		itemValue="#{z}" itemLabel="#{z}"/>
+            </h:selectOneMenu>
+            <h:outputLabel value="#{msg['user.comment']}:"/>
+            <h:inputText value="#{userController.userComment}" size="75"/>
+            <h:outputLabel value="#{msg['user.info']}:"/>
+            <h:inputText value="#{userController.userInfo}" size="75"/>
+            <h:outputLabel value="#{msg['user.create']}:"/>
+            <h:outputText value="#{userController.createTime}">
+            	<f:convertDateTime pattern="M/d/yyyy h:mm:ss aaa"/>
+            </h:outputText>
+            <h:outputLabel value="#{msg['user.modify']}:"/>
+            <h:outputText value="#{userController.modifyTime}">
+            	<f:convertDateTime pattern="M/d/yyyy h:mm:ss aaa"/>
+            </h:outputText>
+            </h:panelGrid>
+            <h:panelGrid id="actionButtons" columns="3" style="margin-bottom:10px;float:left" cellpadding="5">
+            	<h:commandButton value="#{msg['user.button.update']}" action="#{userController.doUpdateUser}"></h:commandButton>
+            </h:panelGrid>
+            <h:inputHidden value="#{userController.userId}"/>
+            <h:inputHidden value="#{userController.userName}"/>
+    </h:form>
+    </ui:define>
+</ui:composition>
+
+</body>
+</html>

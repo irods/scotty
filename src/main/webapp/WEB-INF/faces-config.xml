@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+    version="2.0">
+    
+    	<application>
+    		<locale-config>
+    			<default-locale>en</default-locale>
+    		</locale-config>
+	  		<resource-bundle>
+				<base-name>org.irods.scotty.messages</base-name>
+				<var>msg</var>
+	   		</resource-bundle>
+     	</application>
+
+		<managed-bean>
+			<managed-bean-name>loginController</managed-bean-name>
+			<managed-bean-class>org.irods.scotty.LoginController</managed-bean-class>
+			<managed-bean-scope>session</managed-bean-scope>
+		</managed-bean>
+		<managed-bean>
+			<managed-bean-name>adminTasks</managed-bean-name>
+			<managed-bean-class>org.irods.scotty.AdminTasks</managed-bean-class>
+			<managed-bean-scope>request</managed-bean-scope>
+		</managed-bean>
+		<managed-bean>
+			<managed-bean-name>userController</managed-bean-name>
+			<managed-bean-class>org.irods.scotty.UserController</managed-bean-class>
+			<managed-bean-scope>request</managed-bean-scope>
+			<managed-property>
+				<property-name>loginInfo</property-name>
+    			<property-class>org.irods.scotty.LoginController</property-class>
+    			<value>#{loginController}</value>
+  			</managed-property>
+		</managed-bean>
+		<managed-bean>
+			<managed-bean-name>zoneController</managed-bean-name>
+			<managed-bean-class>org.irods.scotty.ZoneController</managed-bean-class>
+			<managed-bean-scope>request</managed-bean-scope>
+			<managed-property>
+				<property-name>loginInfo1</property-name>
+    			<property-class>org.irods.scotty.LoginController</property-class>
+    			<value>#{loginController}</value>
+  			</managed-property>
+		</managed-bean>
+		<navigation-rule>
+                <display-name>login.xhtml</display-name>
+                <from-view-id>/login.xhtml</from-view-id>
+                <navigation-case>
+                        <from-action>#{loginController.validateUser}</from-action>
+                        <from-outcome>success</from-outcome>
+                        <to-view-id>/dashboard.xhtml</to-view-id>
+                </navigation-case>
+        </navigation-rule>
+		<navigation-rule>
+			<navigation-case>
+				<from-action>#{loginController.logoutUser}</from-action>
+				<from-outcome>logout</from-outcome>
+				<to-view-id>/login.xhtml</to-view-id>
+			</navigation-case>
+		</navigation-rule>
+		<navigation-rule>
+                <display-name>users.xhtml</display-name>
+                <from-view-id>/users.xhtml</from-view-id>
+                <navigation-case>
+                        <from-action>#{userController.goToUpdateAdminUser}</from-action>
+                        <from-outcome>update</from-outcome>
+                        <to-view-id>/update_user.xhtml</to-view-id>
+                </navigation-case>
+                <navigation-case>
+                        <from-action>#{userController.goToUpdateRodsUser}</from-action>
+                        <from-outcome>update</from-outcome>
+                        <to-view-id>/update_user.xhtml</to-view-id>
+                </navigation-case>
+        </navigation-rule>
+		<navigation-rule>
+			<display-name>users.xhtml</display-name>
+			<from-view-id>/users.xhtml</from-view-id>
+			<navigation-case>
+				<from-action>#{userController.goToCreateUser}</from-action>
+				<from-outcome>create</from-outcome>
+				<to-view-id>/create_user.xhtml</to-view-id>
+			</navigation-case>
+		</navigation-rule>
+		<navigation-rule>
+			<navigation-case>
+				<from-outcome>user_admin</from-outcome>
+				<to-view-id>/users.xhtml</to-view-id>
+			</navigation-case>
+		</navigation-rule>
+		
+</faces-config>
