@@ -20,18 +20,18 @@
 			<p:messages id="messages" showSummary="true" showDetail="false" autoUpdate="true"/> 
         </div>
         
-		<h:panelGrid id="userStuff" columns="2" style="margin-bottom:10px" cellpadding="5">
-			<h:outputLabel value="#{msg['user.id']}:"/>
-            <h:outputLabel value="#{userController.userId}"/>
+	    <h:panelGrid id="userStuff" columns="2" style="margin-bottom:10px" cellpadding="5">
+	    <h:outputLabel value="#{msg['user.id']}:"/>
+            <h:outputText value="#{userController.userId}"/>
             <h:outputLabel value="#{msg['user.name']}:"/>
-            <h:outputLabel value="#{userController.userName}"/>
+            <h:outputText value="#{userController.userName}"/>
             <h:outputLabel value="#{msg['user.type']}:"/>
             <p:selectOneMenu id="types" value="#{userController.selectedType}" size="1">
             	<f:selectItems value="#{userController.userTypes}" var="g" 
             		itemValue="#{g}" itemLabel="#{g}"/>
             </p:selectOneMenu>
             <h:outputLabel value="#{msg['user.zone']}:"/>
-            <h:outputLabel value="#{userController.selectedZone}" />
+            <h:outputText value="#{userController.selectedZone}" />
             <h:outputLabel value="#{msg['user.comment']}:"/>
             <p:inputText value="#{userController.userComment}" size="75"/>
             <h:outputLabel value="#{msg['user.info']}:"/>
@@ -56,6 +56,7 @@
         <p:tooltip for="pwd1" showEvent="focus" hideEvent="blur" />
         <h:inputHidden value="#{userController.userId}"/>
         <h:inputHidden value="#{userController.userName}"/>
+        <h:inputHidden value="#{userController.selectedZone}"/>
         <h:inputHidden value="#{userController.createTime}">
         	<f:convertDateTime pattern="M/d/yyyy h:mm:ss aaa"/>
         </h:inputHidden>

@@ -22,14 +22,14 @@ public class LoginController implements Serializable {
 	private static final long serialVersionUID = -212130003200194733L;
 	private String name;
     private String password;
-    private String host = "iren.renci.org";
-    private int port = 1247;
-    private String zone = "renci";
-    private String resource = "renci-vault1";
-//    private String host;
-//    private Integer port;
-//    private String zone;
-//    private String resource;
+//    private String host = "iren.renci.org";
+//    private int port = 1247;
+//    private String zone = "renci";
+//    private String resource = "renci-vault1";
+    private String host;
+    private Integer port;
+    private String zone;
+    private String resource;
     public List<SelectItem> userList;
     private IRODSFileSystem irodsFileSystem = null;
     private IRODSAccessObjectFactory accessObjectFactory = null;
@@ -188,7 +188,8 @@ public class LoginController implements Serializable {
         
         //IRODSProtocolManager irodsConnectionManager = IRODSSimpleProtocolManager.instance();
     	setLoginErrorMsg("");
-        irodsAccount = new IRODSAccount(this.host, this.port, this.name, this.password, "", this.zone, this.resource);
+        //irodsAccount = new IRODSAccount(this.host, this.port, this.name, this.password, "", this.zone, this.resource);
+        irodsAccount = new IRODSAccount(this.host, this.port, this.name, this.password, "", this.zone, "");
 
         try {
 

@@ -4,14 +4,52 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 	
 <head><title>IGNORED</title></head>
 <body>
 <ui:composition template="/WEB-INF//templates/site.xhtml">
 		
 	<ui:define name="content">
-	    Here is a placeholder for the Administration Dashboard
+		<h:panelGrid>
+	    Here is a placeholder for the Administration Dashboard which will display information metrics such as this:
+	    </h:panelGrid>
+	    <p:spacer height="10"/>
+	    <p:panelGrid>
+	    	<p:row>
+	    		<p:column rowspan="3">
+	    			<h:link outcome="user_admin">
+	   					<h:graphicImage name="user.png" library="images"></h:graphicImage>
+	   				</h:link>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfUsers}" />
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total iRODS<p:spacer width="2"/></h:outputLabel>
+	   				<h:link value="Users" outcome="user_admin" />
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfAdminUsers}" />
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Admin<p:spacer width="2"/></h:outputLabel>
+	   				<h:link value="Users" outcome="user_admin" />
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfRodsUsers}" />
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Rods<p:spacer width="2"/></h:outputLabel>
+	   				<h:link value="Users" outcome="user_admin" />
+	   			</p:column>
+	   		</p:row>
+	   	</p:panelGrid>
 	</ui:define>
 
 </ui:composition>

@@ -46,6 +46,16 @@
     			<value>#{loginController}</value>
   			</managed-property>
 		</managed-bean>
+		<managed-bean>
+			<managed-bean-name>dashboardController</managed-bean-name>
+			<managed-bean-class>org.irods.scotty.DashboardController</managed-bean-class>
+			<managed-bean-scope>request</managed-bean-scope>
+			<managed-property>
+				<property-name>loginInfo</property-name>
+    			<property-class>org.irods.scotty.LoginController</property-class>
+    			<value>#{loginController}</value>
+  			</managed-property>
+		</managed-bean>
 		<navigation-rule>
                 <display-name>login.xhtml</display-name>
                 <from-view-id>/login.xhtml</from-view-id>
