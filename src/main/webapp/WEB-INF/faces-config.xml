@@ -56,6 +56,16 @@
     			<value>#{loginController}</value>
   			</managed-property>
 		</managed-bean>
+		<managed-bean>
+                        <managed-bean-name>resourcesController</managed-bean-name>
+                        <managed-bean-class>org.irods.scotty.ResourcesController</managed-bean-class>
+                        <managed-bean-scope>request</managed-bean-scope>
+                        <managed-property>
+                                <property-name>loginInfo</property-name>
+                        <property-class>org.irods.scotty.LoginController</property-class>
+                        <value>#{loginController}</value>
+                        </managed-property>
+                </managed-bean>
 		<navigation-rule>
                 <display-name>login.xhtml</display-name>
                 <from-view-id>/login.xhtml</from-view-id>
@@ -101,5 +111,11 @@
 				<to-view-id>/users.xhtml</to-view-id>
 			</navigation-case>
 		</navigation-rule>
+		<navigation-rule>
+                        <navigation-case>
+                                <from-outcome>resource_admin</from-outcome>
+                                <to-view-id>/resources.xhtml</to-view-id>
+                        </navigation-case>
+                </navigation-rule>
 		
 </faces-config>

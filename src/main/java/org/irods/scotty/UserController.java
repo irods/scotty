@@ -477,6 +477,9 @@ public class UserController implements Serializable {
 		String successMsg = "User: '" + userName + "' successfully removed";
 		String failMsg = "User: '" + userName + "' NOT removed: ";
 		
+		//first remove this user from admin users list to make the list refresh on page
+		this.adminUsersList.remove(adminListModel.getRowIndex());
+
 		// remove the user and get exception message - if any
 		String exMsg = removeUser(userName);
 		if (exMsg.length() > 0) {

@@ -8,7 +8,9 @@ import org.irods.jargon.core.exception.JargonException;
 import org.irods.jargon.core.protovalues.UserTypeEnum;
 import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.IRODSFileSystem;
+import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.UserAO;
+import org.irods.jargon.core.pub.domain.Resource;
 import org.irods.jargon.core.pub.domain.User;
 
 public class DashboardController implements Serializable {
@@ -17,7 +19,10 @@ public class DashboardController implements Serializable {
 	private Integer numberOfAdminUsers;
 	private Integer numberOfRodsUsers;
 	private Integer numberOfUsers;
+	private Integer numberOfResources;
+	private Integer numberOfResourcesInZone;
 	private List<User> users;
+	private List<Resource> resources;
 
 	public DashboardController() {
 		
@@ -105,5 +110,55 @@ public class DashboardController implements Serializable {
 
 	public void setNumberOfRodsUsers(Integer numberOfRodsUsers) {
 		this.numberOfRodsUsers = numberOfRodsUsers;
+	}
+	
+	public Integer getNumberOfResources() {
+		Integer number = 0;
+		
+		IRODSAccessObjectFactory accessObjectFactory;
+		
+		IRODSAccount irodsAccount = loginInfo.getIRODSAccount();
+		IRODSFileSystem irodsFileSystem = loginInfo.getIRODSFileSystem();
+    	try {
+    		accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
+			ResourceAO resourceAO = accessObjectFactory.getResourceAO(irodsAccount);
+			number = resourceAO.findAll().size(); 
+    	} catch (JargonException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			irodsFileSystem.closeAndEatExceptions();
+		}
+		
+		return number;
+	}
+	
+	public void setNumberOfResources(Integer numberOfResources) {
+		this.numberOfResources = numberOfResources;
+	}
+	
+	public Integer getNumberOfResourcesInZone() {
+		Integer number = 0;
+		
+		IRODSAccessObjectFactory accessObjectFactory;
+		
+		IRODSAccount irodsAccount = loginInfo.getIRODSAccount();
+		IRODSFileSystem irodsFileSystem = loginInfo.getIRODSFileSystem();
+    	try {
+    		accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
+			ResourceAO resourceAO = accessObjectFactory.getResourceAO(irodsAccount);
+			number = resourceAO.listResourcesInZone(loginInfo.getZone()).size();
+    	} catch (JargonException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			irodsFileSystem.closeAndEatExceptions();
+		}
+		
+		return number;
+	}
+	
+	public void setNumberOfResourcesInZone(Integer numberOfResourcesInZone) {
+		this.numberOfResourcesInZone = numberOfResourcesInZone;
 	}
 }

@@ -18,20 +18,11 @@
 	    <p:spacer height="10"/>
 	    <p:panelGrid>
 	    	<p:row>
-	    		<p:column rowspan="3">
+	    		<p:column rowspan="2">
 	    			<h:link outcome="user_admin">
 	   					<h:graphicImage name="user.png" library="images"></h:graphicImage>
 	   				</h:link>
 	   			</p:column>
-	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfUsers}" />
-	   			</p:column>
-	   			<p:column>
-	   				<h:outputLabel>Total iRODS<p:spacer width="2"/></h:outputLabel>
-	   				<h:link value="Users" outcome="user_admin" />
-	   			</p:column>
-	   		</p:row>
-	   		<p:row>
 	   			<p:column>
 	   				<h:outputText value="#{dashboardController.numberOfAdminUsers}" />
 	   			</p:column>
@@ -42,11 +33,38 @@
 	   		</p:row>
 	   		<p:row>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfRodsUsers}" />
+	   				<h:outputText value="#{dashboardController.numberOfUsers}" />
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>iRODS Rods<p:spacer width="2"/></h:outputLabel>
+	   				<h:outputLabel>Total iRODS<p:spacer width="2"/></h:outputLabel>
 	   				<h:link value="Users" outcome="user_admin" />
+	   			</p:column>
+	   		</p:row>
+	   	</p:panelGrid>
+	    <p:spacer height="20"/>
+	    <p:panelGrid>
+	    	<p:row>
+	    		<p:column rowspan="2">
+	    			<h:link outcome="resource_admin">
+	   					<h:graphicImage name="media_disk.png" library="images"></h:graphicImage>
+	   				</h:link>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfResourcesInZone}" />
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS<p:spacer width="2"/></h:outputLabel>
+	   				<h:link value="Resources" outcome="resource_admin" />
+	   				<h:outputLabel><p:spacer width="2"/>in this Zone<p:spacer width="2"/></h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfResources}" />
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total iRODS<p:spacer width="2"/></h:outputLabel>
+	   				<h:link value="Resources" outcome="resource_admin" />
 	   			</p:column>
 	   		</p:row>
 	   	</p:panelGrid>
