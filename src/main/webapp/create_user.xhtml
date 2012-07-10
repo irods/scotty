@@ -33,9 +33,9 @@
             		<h:outputLabel value="#{msg['user.info']}:"/>
             		<p:inputText value="#{userController.userInfo}" size="75"/>
             		<h:outputLabel for="pwd1" value="#{msg['user.password']}:" />  
-            		<p:password id="pwd1" value="#{userController.userPassword}" match="pwd2" label="Password" required="true"/>  
+            		<p:password id="pwd1" value="#{userController.userPassword}" match="pwd2" label="Password"/>  
             		<h:outputLabel for="pwd2" value="#{msg['user.verify_password']}:" />  
-            		<p:password id="pwd2" value="#{userController.userPassword}" label="Verify Password" required="true"/>
+            		<p:password id="pwd2" value="#{userController.userPassword}" label="Verify Password"/>
             	</h:panelGrid>
             </h:panelGrid>
             <h:panelGrid id="actionButtons" columns="3" style="margin-bottom:10px;float:left" cellpadding="5">
