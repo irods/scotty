@@ -344,9 +344,10 @@ public class UserController implements Serializable {
 				UserAO userAO = accessObjectFactory.getUserAO(irodsAccount);
 				userAO.addUser(user);
 				
-				// now update password
-				// TODO: need to remove user if change password fails
-				userAO.changeAUserPasswordByAnAdmin(user.getName(), this.userPassword);
+				// add the password if it has been entered
+				if ((this.userPassword != null) && (this.userPassword.length() > 0)) {
+					userAO.changeAUserPasswordByAnAdmin(user.getName(), this.userPassword);
+				}
 			} catch (DuplicateDataException e) {
 				statusMsg = e.getMessage();
 				e.printStackTrace();
