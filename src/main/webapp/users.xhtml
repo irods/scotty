@@ -46,7 +46,8 @@
     		</h:column>
     		<h:column>
     			<h:commandButton value="#{msg['user.button.remove']}" action="#{userController.doRemoveAdminUser}"
-    				onclick="if (!confirm('Are you sure you wish to remove user: &quot;#{user.name}&quot;?')) return false;"></h:commandButton>
+    				onclick="if (!confirm('Are you sure you wish to remove user: &quot;#{user.name}&quot;?')) return false;"
+    				rendered="#{user.name ne loginController.name}"></h:commandButton>
     		</h:column>
     	</h:dataTable>
     	
