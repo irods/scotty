@@ -36,7 +36,7 @@ public class LoginController implements Serializable {
     private IRODSAccount irodsAccount = null;
     private String headerMsg = "Not Logged In";
     private String loginErrorMsg;
-    private Boolean authenticated = false;
+    private Boolean loginAuthenticated = false;
 
     public LoginController() {
     }
@@ -112,6 +112,10 @@ public class LoginController implements Serializable {
     {
         this.resource = resource;
     }
+    
+    public Boolean getLoginAuthenticated() {
+    	return loginAuthenticated;
+    }
         
         
     public void setHeaderMsg(String msg) {
@@ -156,9 +160,9 @@ public class LoginController implements Serializable {
     	String outcome = "logout";
     	
     	// TODO: This does not really work - need to use something like Spring Security
-    	setHeaderMsg("Not Logged In");
+    	setHeaderMsg(buildLoginHeader(false));
     	resetLoginCredentials();
-    	this.authenticated = false;
+    	this.loginAuthenticated = false;
     	FacesContext facesContext = FacesContext.getCurrentInstance();
     	HttpSession httpSession = (HttpSession)facesContext.getExternalContext().getSession(false);
     	httpSession.invalidate();
@@ -174,6 +178,21 @@ public class LoginController implements Serializable {
     
     public IRODSAccount getIRODSAccount() {
     	return this.irodsAccount;
+    }
+    
+    public String buildLoginHeader(Boolean loggedIn) {
+    	StringBuilder loginStr = new StringBuilder();
+    	if (loggedIn) { 
+    		loginStr.append("Admin User: ");
+    		loginStr.append(this.name);
+    		loginStr.append("  Zone: ");
+    		loginStr.append(this.zone);
+    	}
+    	else {
+    		loginStr.append("Not Logged In");
+    	}
+    	
+    	return loginStr.toString();
     }
     
     
@@ -225,8 +244,8 @@ public class LoginController implements Serializable {
         }
 
         if(outcome.equals("success")) {
-        	this.authenticated = true;
-        	setHeaderMsg("Admin User:  ");
+        	this.loginAuthenticated = true;
+        	setHeaderMsg(buildLoginHeader(true));
         }
 
         return outcome;
