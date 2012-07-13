@@ -10,6 +10,15 @@ import org.irods.jargon.core.pub.IRODSFileSystem;
 import org.irods.jargon.core.pub.ResourceAO;
 import org.irods.jargon.core.pub.domain.Resource;
 
+
+/**
+ * ResourcesController is the backing bean for the iRODS resources list page (resources.xhtml) 
+ * note that the getters/setters are used in the resources.xhtml file for display and retrieval
+ * of data
+ * 
+ * @author Lisa Stillwell - RENCI - (www.renci.org)
+ *
+ */
 public class ResourcesController implements Serializable {
 
 	private LoginController loginInfo;
@@ -18,6 +27,9 @@ public class ResourcesController implements Serializable {
 	public ResourcesController() {
 		
 	}
+	
+	// get access to the session scoped information in the LoginContoller bean
+	// which is also defined as a managed property in WEB-INF/faces-config.xml
 	public void setLoginInfo(LoginController bean) {
 		this.loginInfo = bean;
 	}
@@ -25,6 +37,12 @@ public class ResourcesController implements Serializable {
 		return this.loginInfo;
 	}
 	
+	/**
+	 * Get full list of resources associated with this grid
+	 * 
+	 * @return <code>List</code> of {@link Resource} representing all of the resources
+	 * 		for this grid
+	 */
 	public List<Resource> getAllResourcesList() {
 		List <Resource> resources = null;
 		IRODSAccessObjectFactory accessObjectFactory;

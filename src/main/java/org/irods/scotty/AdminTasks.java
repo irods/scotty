@@ -1,7 +1,13 @@
 package org.irods.scotty;
 
 import java.io.Serializable;
-
+ 
+/**
+ * * Manipulate the Tasks menu
+ * 
+ * @author Lisa Stillwell
+ *
+ */
 public class AdminTasks implements Serializable {
 	
 	private static final long serialVersionUID = -1527533636119933180L;

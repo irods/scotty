@@ -16,12 +16,25 @@ import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.IRODSFileSystem;
 import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.domain.User;
-
+/**
+ * This is the backing bean for the login page (login.xthml)
+ * It is session scoped since it contains the login credentials needed for
+ * for any communication with iRODS
+ * Note that there is not really a concept of logging into iRODS - the login
+ * credentials are simply validated and an initialized Jargon IRODSAccount is used
+ * for validation every time the client talks to the iRODS server
+ * <p/>
+ * Also note that the getters/setters are used in the login.xhtml file (and possibly others)
+ * for display and retrieval of data
+ * @author Lisa Stillwell - RENCI (www.renci.org)
+ * 
+**/
 public class LoginController implements Serializable {
 
 	private static final long serialVersionUID = -212130003200194733L;
 	private String name;
     private String password;
+//	used for testing
 //    private String host = "iren.renci.org";
 //    private int port = 1247;
 //    private String zone = "renci";
@@ -136,11 +149,6 @@ public class LoginController implements Serializable {
     public String getLoginErrorMsg() {
     	return this.loginErrorMsg;
     }
-
-
-//        public Boolean isAuthenticated() {
-//        	return this.authenticated;
-//        }
     
     
     private void resetLoginCredentials() {
@@ -151,16 +159,18 @@ public class LoginController implements Serializable {
     
     private void loginError(String msg) {
     	resetLoginCredentials();
-    	//setLoginErrorMsg("Invalid User - Please retry.");
     	MessagesController.addErrorMsg("Cannot Login : " + msg);
     }
     
     
+    /**
+     * 
+     * @return <code>String</code> with outcome logout - used for page navigation
+     */
     public String logoutUser() {
     	String outcome = "logout";
     	
     	// TODO: This does not really work - need to use something like Spring Security
-    	setHeaderMsg(buildLoginHeader(false));
     	resetLoginCredentials();
     	this.loginAuthenticated = false;
     	FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -180,6 +190,11 @@ public class LoginController implements Serializable {
     	return this.irodsAccount;
     }
     
+    /**
+     * Build string displayed in page header to indicate whether the user is logged in or not
+     * @param loggedIn <code>Boolean</code> used to indicate the login status of the user
+     * @return <code>String</code> specifying the method outcome - used for page navigation
+     */
     public String buildLoginHeader(Boolean loggedIn) {
     	StringBuilder loginStr = new StringBuilder();
     	if (loggedIn) { 
@@ -198,6 +213,11 @@ public class LoginController implements Serializable {
     
     // create IRODSAccount from login credentials and use to connect, authentic,
     // and verify that this is an iRODS admin user
+    /**
+     * Validate user against specified iRODS grid
+     * @return <code>String</code> specifying the method outcome (success/fail) - used for page navigation
+     * @throws Exception
+     */
     public String validateUser() throws Exception
     {
         //IRODSSession irodsSession;
@@ -208,15 +228,17 @@ public class LoginController implements Serializable {
         //IRODSProtocolManager irodsConnectionManager = IRODSSimpleProtocolManager.instance();
     	setLoginErrorMsg("");
         //irodsAccount = new IRODSAccount(this.host, this.port, this.name, this.password, "", this.zone, this.resource);
+    	//initialize iRODS Account
         irodsAccount = new IRODSAccount(this.host, this.port, this.name, this.password, "", this.zone, "");
 
         try {
 
                 //irodsSession = IRODSSession.instance(irodsConnectionManager);
+        		// Get an iRODS access object
                 irodsFileSystem = IRODSFileSystem.instance();
                 accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
 
-
+                // verify this user exists and that it is a rodsadmin user type
                 UserAO userAO = accessObjectFactory.getUserAO(irodsAccount);
                 User adminUser = userAO.findByName(this.name);
                 if (adminUser.getUserType().equals(UserTypeEnum.RODS_ADMIN)) {

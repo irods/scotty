@@ -1,5 +1,9 @@
 package org.irods.scotty;
 
+/**
+ * Used to compose application messages
+ * @author Lisa Stillwell - RENCI (www.renci.org)
+ */
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
