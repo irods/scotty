@@ -47,19 +47,30 @@ public class ResourcesController implements Serializable {
 		List <Resource> resources = null;
 		IRODSAccessObjectFactory accessObjectFactory;
 		
-		IRODSAccount irodsAccount = loginInfo.getIRODSAccount();
-		IRODSFileSystem irodsFileSystem = loginInfo.getIRODSFileSystem();
-		try {
-			accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
-			ResourceAO resourceAO = accessObjectFactory.getResourceAO(irodsAccount);
-			resources = resourceAO.findAll();
-		} catch (JargonException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			irodsFileSystem.closeAndEatExceptions();
+		// first check to see if resources have already been retrieved
+		if (this.allResourcesList == null) {
+		
+			// get iRODS access info from LoginController bean and use to get
+			// Jargon Resource Access Object
+			IRODSAccount irodsAccount = loginInfo.getIRODSAccount();
+			IRODSFileSystem irodsFileSystem = loginInfo.getIRODSFileSystem();
+			try {
+				accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
+				ResourceAO resourceAO = accessObjectFactory.getResourceAO(irodsAccount);
+				// set resource list
+				this.allResourcesList = resourceAO.findAll();
+			} catch (JargonException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				irodsFileSystem.closeAndEatExceptions();
+			}
 		}
 		
-		return resources;
+		return this.allResourcesList;
+	}
+	
+	public void setAllResources(List<Resource> resources) {
+		this.allResourcesList = resources;
 	}
 }

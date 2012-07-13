@@ -14,25 +14,25 @@
 <ui:composition template="/WEB-INF/templates/site.xhtml">
     <ui:define name="content">
     <h:form>
-    	<h:dataTable value="#{resourcesController.allResourcesList}" var="resc">
+    	<p:dataTable value="#{resourcesController.allResourcesList}" var="resc">
     		<f:facet name="caption">iRODS Resources List</f:facet>
-    		<h:column>
+    		<p:column sortBy="#{resc.id}">
     			<f:facet name="header">Id</f:facet>
     			#{resc.id}
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column sortBy="#{resc.name}">
     			<f:facet name="header">Name</f:facet>
     			#{resc.name}
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column sortBy="#{resc.type}">
     			<f:facet name="header">Type</f:facet>
     			#{resc.type}
-    		</h:column>
-			<h:column>
+    		</p:column>
+			<p:column sortBy="#{resc.vaultPath}">
     			<f:facet name="header">Vault Path</f:facet>
     			#{resc.vaultPath}
-    		</h:column>
-    	</h:dataTable>
+    		</p:column>
+    	</p:dataTable>
     </h:form>
     </ui:define>
 </ui:composition>
