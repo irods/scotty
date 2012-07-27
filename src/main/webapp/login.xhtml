@@ -17,7 +17,7 @@
         </ui:define>
         
         <ui:define name="content">
-            <h:form>
+            <h:form onsubmit="document.body.style.cursor='wait'">
             <h:panelGrid>
         		<p:messages id="messages" showSummary="false" showDetail="true" autoUpdate="true"/>
             </h:panelGrid>
@@ -40,7 +40,7 @@
                 <p:password value="#{loginController.password}" required="true"/>
                 
             </h:panelGrid>
-            <h:commandButton value="#{msg['login.button.login']}" action="#{loginController.validateUser}" />
+            <h:commandButton value="#{msg['login.button.login']}" action="#{loginController.validateUser}"/>
             
         </h:form>
         </ui:define>
