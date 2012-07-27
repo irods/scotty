@@ -12,6 +12,7 @@
 <ui:composition template="/WEB-INF//templates/site.xhtml">
 		
 	<ui:define name="content">
+	 <h:form>
 		<h:panelGrid>
 	    Here is a placeholder for the Administration Dashboard which will display information metrics such as this:
 	    </h:panelGrid>
@@ -68,6 +69,306 @@
 	   			</p:column>
 	   		</p:row>
 	   	</p:panelGrid>
+	   	<p:spacer height="40"/>
+	   	<h:panelGrid>
+	    <h:outputLabel>Total Zone (#{loginController.zone}) Statistics</h:outputLabel>
+	   	<p:panelGrid>
+	    	<p:row>
+	    		<p:column rowspan="4">
+	   				<h:graphicImage name="folder.png" library="images"></h:graphicImage>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Files in this Zone</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsInZoneWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Collections in this Zone<p:spacer width="2"/></h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsWithObjectsInZoneWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Collections in this Zone containing Data Objects<p:spacer width="2"/></h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   		<p:column rowspan="4">
+	   				<h:graphicImage name="trash.png" library="images"></h:graphicImage>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Files in this Zone that are in Trash</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone that are in Trash</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsInZoneInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Collections in this Zone that are in Trash</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsWithObjectsInZoneInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Collections in this Zone containing Data Objects that are in Trash<p:spacer width="2"/></h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   	</p:panelGrid>
+	   	</h:panelGrid>
+	   	
+	   	<p:spacer height="40"/>
+	   	<h:panelGrid>
+	   		<h:outputLabel id="userLabel">Per User (#{dashboardController.selectedUser}) Zone Statistics</h:outputLabel>
+        	<h:selectOneListbox id="userListBox" value="#{dashboardController.selectedUser}" size="1">
+            	<f:selectItems value="#{dashboardController.usersInZone}" var="user" itemValue="#{user.name}"/>
+                <f:ajax event="change" execute="@this resourceListBox" render="userLabel userStuff userANDrescStuff"></f:ajax>
+            </h:selectOneListbox>
+            <p:panelGrid id="userStuff">
+        	<p:row>
+	    		<p:column rowspan="4">
+	   				<h:graphicImage name="folder.png" library="images"></h:graphicImage>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForUserWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Files in this Zone for this User</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForUserWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone for this User</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsInZoneForUserWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Collections in this Zone for this User</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsWithObjectsInZoneForUserWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Collections in this Zone containing Data Objects for this User</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column rowspan="4">
+	   				<h:graphicImage name="trash.png" library="images"></h:graphicImage>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForUserInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Files in this Zone that are in Trash for this User</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForUserInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone that are in Trash for this User</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsInZoneForUserInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Collections in this Zone that are in Trash for this User</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsWithObjectsInZoneForUserInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Collections in this Zone containing Data Objects that are in Trash for this User</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+        	</p:panelGrid>
+        </h:panelGrid>
+        
+        <p:spacer height="40"/>
+	   	<h:panelGrid>
+	   		<h:outputLabel id="rescLabel">Per Resource (#{dashboardController.selectedResource}) Zone Statistics</h:outputLabel>
+        	<h:selectOneListbox id="resourceListBox" value="#{dashboardController.selectedResource}" size="1">
+            	<f:selectItems value="#{dashboardController.resourcesInZone}" var="resc" itemValue="#{resc.name}"/>
+                <f:ajax event="change" execute="@this userListBox" render="rescLabel rescStuff userANDrescStuff"></f:ajax>
+            </h:selectOneListbox>
+            <p:panelGrid id="rescStuff">
+            <p:row>
+	    		<p:column rowspan="2">
+	   				<h:graphicImage name="folder.png" library="images"></h:graphicImage>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForResourceWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Files in this Zone for this Resource</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForResourceWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone for this Resource</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column rowspan="2">
+	   				<h:graphicImage name="trash.png" library="images"></h:graphicImage>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForResourceInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Files in this Zone that are in Trash for this Resource</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForResourceInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone that are in Trash for this Resource</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+            </p:panelGrid>
+         </h:panelGrid>
+
+         <p:spacer height="40"/>
+        <h:panelGrid id="userANDrescStuff">
+	   	<h:outputLabel>Per User (#{dashboardController.selectedUser}) and Resource (#{dashboardController.selectedResource}) Zone Statistics</h:outputLabel>
+	   	<p:panelGrid>
+	   		<p:row>
+	    		<p:column rowspan="2">
+	   				<h:graphicImage name="folder.png" library="images"></h:graphicImage>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForUserForResourceWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Files in this Zone for this User and Resource</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForUserForResourceWithoutTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone for this User and Resource</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column rowspan="2">
+	   				<h:graphicImage name="trash.png" library="images"></h:graphicImage>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForUserForResourceInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>iRODS Files in this Zone that are in Trash for this User and Resource</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   		<p:row>
+	   			<p:column>
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForUserForResourceInTrash}">
+	   					<f:convertNumber pattern="###,###" />
+	   				</h:outputText>
+	   			</p:column>
+	   			<p:column>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone that are in Trash for this User and Resource</h:outputLabel>
+	   			</p:column>
+	   		</p:row>
+	   	</p:panelGrid>
+	   	</h:panelGrid>
+         </h:form>
 	</ui:define>
 
 </ui:composition>
