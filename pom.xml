@@ -118,6 +118,6 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-    <plugins>
+    </plugins>
   </build>
 </project>
