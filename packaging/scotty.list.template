@@ -1,0 +1,323 @@
+%product iRODS System Administration
+%copyright Any copyright here.
+%vendor Data Intensive Cyberinfrastructure Foundation, Renaissance Computing Institute
+%license COPYING
+%readme README
+%description Web Based Interface for iRODS Administration
+%version 0.0.1 100001
+
+# don't think http is actually needed
+# %requires httpd 2
+
+%if DEB
+%requires tomcat6
+%requires openjdk-6-jre
+%else
+%requires java 6
+%endif
+
+%format all
+
+# =-=-=-=-=-=-=-
+# variables for configuring the install
+# =-=-=-=-=-=-=-
+$OS_SCOTTY_ACCT=scotty
+$OS_SCOTTY_DIR=scotty
+$SCOTTY_HOME_DIR=/var/lib/$OS_SCOTTY_DIR
+
+$TOMCAT_STARTED=false
+
+# these tomcat vars used for tomcat install on rpm systems
+$TOMCAT_EXTRACT_DIR=/var/lib
+$TOMCAT_VER=6
+$TOMCAT_VER_DOT=0.35
+$TOMCAT_FILE=apache-tomcat-${TOMCAT_VER}.${TOMCAT_VER_DOT}
+$TOMCAT_ARC_FILE=${TOMCAT_FILE}.tar.gz
+$TOMCAT_HTTP_HOST=http://apache.mirrors.pair.com/tomcat/tomcat-${TOMCAT_VER}/v${TOMCAT_VER}.${TOMCAT_VER_DOT}/bin/
+$TOMCAT_TMP_LOC=/tmp/tomcat${TOMCAT_VER}.tar.gz
+
+%if DEB
+# these tomcat vars used for tomcat install on debian systems
+# hopefully everything will migrate to use these vars when centos
+# finally catches up with support for tomcat 6
+$OS_TOMCAT_ACCT=tomcat6
+$TOMCAT_HOME_DIR=/var/lib/${OS_TOMCAT_ACCT}
+$DEB=true
+%else
+$TOMCAT_HOME_DIR=${TOMCAT_EXTRACT_DIR}/scotty-tomcat-${TOMCAT_VER}.${TOMCAT_VER_DOT}
+$OS_TOMCAT_ACCT=scottytc
+$RPM=true
+%endif
+
+# =-=-=-=-=-=-=-
+# preinstall directives
+# =-=-=-=-=-=-=-
+
+# if this is a centos install, use wget to download tomcat 6
+# and install manually # also add a service account for tomcat
+%if RPM
+%preinstall << END_PREINSTALL
+
+#make sure tomcat is not already installed here
+if [ -d "${TOMCAT_HOME_DIR}" ]; then
+  echo "WARNING :: Tomcat Is Already Installed In: ${TOMCAT_HOME_DIR}"
+else
+# install tomcat
+  echo "INFO :: Getting Apache Tomcat version: ${TOMCAT_VER}.${TOMCAT_VER_DOT} ..."
+# download install archive
+  wget -O ${TOMCAT_TMP_LOC} ${TOMCAT_HTTP_HOST}${TOMCAT_ARC_FILE}
+# unpack into /var/lib
+  tar -zxf $TOMCAT_TMP_LOC -C $TOMCAT_EXTRACT_DIR
+  mv /var/lib/${TOMCAT_FILE} ${TOMCAT_HOME_DIR}
+fi
+
+# create a service account for tomcat
+# determine if the service account already exists
+USER=$$( grep $OS_TOMCAT_ACCT /etc/passwd )
+if [ -n "$$USER" ];
+then
+  echo "WARNING :: Service Account $OS_TOMCAT_ACCT Already Exists."
+else
+# create the service account
+  echo "INFO :: Creating Service Account: $OS_TOMCAT_ACCT at ${TOMCAT_HOME_DIR}"
+  /usr/sbin/useradd -c "Tomcat" -d ${TOMCAT_HOME_DIR} -s "/sbin/nologin" $OS_TOMCAT_ACCT
+fi
+ACCT=$OS_TOMCAT_ACCT
+chown -R $$ACCT:$$ACCT ${TOMCAT_HOME_DIR}
+
+# create a service account for scotty 
+# determine if the service account already exists
+USER=$$( grep $OS_SCOTTY_ACCT /etc/passwd )
+if [ -n "$$USER" ];
+then
+ echo "WARNING :: Service Account $OS_SCOTTY_ACCT Already Exists"
+else
+# create the service account
+ echo "INFO :: Creating Service Account: $OS_SCOTTY_ACCT at ${SCOTTY_HOME_DIR}"
+ /usr/sbin/useradd -m -d ${SCOTTY_HOME_DIR} $OS_SCOTTY_ACCT
+ chmod 755 ${SCOTTY_HOME_DIR}
+fi
+END_PREINSTALL
+
+%elseif DEB
+%preinstall << END_PREINSTALL
+# create a service account for scotty 
+# determine if the service account already exists
+USER=$$( grep $OS_SCOTTY_ACCT /etc/passwd )
+if [ -n "$$USER" ];
+then
+ echo "WARNING :: Service Account $OS_SCOTTY_ACCT Already Exists"
+else
+# create the service account
+ echo "INFO :: Creating Service Account: $OS_SCOTTY_ACCT at ${SCOTTY_HOME_DIR}"
+ /usr/sbin/useradd -m -d ${SCOTTY_HOME_DIR} $OS_SCOTTY_ACCT
+ chmod 755 ${SCOTTY_HOME_DIR}
+fi
+END_PREINSTALL
+
+%endif
+
+# =-=-=-=-=-=-=-
+# post install
+# =-=-=-=-=-=-=-
+
+%if RPM
+%postinstall << END_POSTINSTALL
+
+# start tomcat
+echo "INFO :: Starting Tomcat ..."
+su -p -s /bin/sh $OS_TOMCAT_ACCT ${TOMCAT_HOME_DIR}/bin/startup.sh
+
+# wait until the tomcat conf/Catalina/localhost folder is created
+# or timeout after about 10 seconds
+TRIES=0
+while [ "$$TRIES" -lt 100 -a ! -e ${TOMCAT_HOME_DIR}/conf/Catalina/localhost ]; do
+  TRIES=$$((TRIES + 1))
+  sleep .1
+done
+
+# create config file (if it does not exist) for scotty in order to allow symbolic linking
+echo "INFO :: Configuring Scotty for Tomcat ..."
+if [ -f ${TOMCAT_HOME_DIR}/conf/Catalina/localhost/${OS_SCOTTY_DIR}.xml ];
+then
+ echo "WARNING :: ${TOMCAT_HOME_DIR}/conf/Catalina/localhost/${OS_SCOTTY_DIR}.xml Already Exists"
+else
+ echo "<?xml version='1.0' encoding='utf-8'?>
+<Context path=\"/scotty\" allowLinking=\"true\">
+
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+</Context>" > ${TOMCAT_HOME_DIR}/conf/Catalina/localhost/${OS_SCOTTY_DIR}.xml
+fi
+
+# create symbolic link to scotty
+if [ -f ${TOMCAT_HOME_DIR}/webapps/${OS_SCOTTY_DIR} ];
+then
+ echo "WARNING :: ${TOMCAT_HOME_DIR}/webapps/${OS_SCOTTY_DIR} Already Exists"
+else
+ ln -s ${SCOTTY_HOME_DIR} ${TOMCAT_HOME_DIR}/webapps/${OS_SCOTTY_DIR}
+fi
+
+# add iptables entry for HTTP and port 8080
+echo "INFO :: Modifying Firewall For HTTP Port 8080 access ..."
+/sbin/iptables -N scotty
+/sbin/iptables -I INPUT 1 -j scotty
+/sbin/iptables -A scotty -m state --state NEW -p tcp --dport 80 -j ACCEPT
+/sbin/iptables -A scotty -m tcp -p tcp --dport 8080 -m state --state NEW -j ACCEPT
+/sbin/iptables -A scotty -m state --state ESTABLISHED,RELATED -j ACCEPT
+/sbin/service iptables save
+
+# Done - print info for starting up
+echo "INFO :: To Run Scotty In Web Browser Type: http://127.0.0.1:8080/scotty/faces/logi.xhmtl"
+END_POSTINSTALL
+
+%elseif DEB
+%postinstall << END_POSTINSTALL
+
+# if not already running - start tomcat
+RESULT=$$(ps ax | grep -v grep | grep -i tomcat)
+if [ -n "$$RESULT" ];
+then
+  echo "INFO :: Starting Tomcat ..."
+  /usr/sbin/service ${TOMCAT_VER} start
+fi
+
+# wait until the tomcat conf/Catalina/localhost folder is created
+# or timeout after about 10 seconds
+TRIES=0
+while [ "$$TRIES" -lt 100 -a ! -e ${TOMCAT_HOME_DIR}/conf/Catalina/localhost ]; do
+  TRIES=$$((TRIES + 1))
+  sleep .1
+done
+
+# create config file (if it does not exist) for scotty in order to allow symbolic linking
+echo "INFO :: Configuring Scotty for Tomcat ..."
+if [ -f ${TOMCAT_HOME_DIR}/conf/Catalina/localhost/${OS_SCOTTY_DIR}.xml ];
+then
+ echo "WARNING :: ${TOMCAT_HOME_DIR}/conf/Catalina/localhost/${OS_SCOTTY_DIR}.xml Already Exists"
+else
+ echo "<?xml version='1.0' encoding='utf-8'?>
+<Context path=\"/scotty\" allowLinking=\"true\">
+
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+</Context>" > ${TOMCAT_HOME_DIR}/conf/Catalina/localhost/${OS_SCOTTY_DIR}.xml
+fi
+
+# create symbolic link to scotty
+if [ -f ${TOMCAT_HOME_DIR}/webapps/${OS_SCOTTY_DIR} ];
+then
+ echo "WARNING :: ${TOMCAT_HOME_DIR}/webapps/${OS_SCOTTY_DIR} Already Exists"
+else
+ ln -s ${SCOTTY_HOME_DIR} ${TOMCAT_HOME_DIR}/webapps/${OS_SCOTTY_DIR}
+fi
+
+# add iptables entry for HTTP and port 8080
+echo "INFO :: Modifying Firewall For HTTP Port 8080 access ..."
+/sbin/iptables -N scotty
+/sbin/iptables -I INPUT 1 -j scotty
+/sbin/iptables -A scotty -m state --state NEW -p tcp --dport 80 -j ACCEPT
+/sbin/iptables -A scotty -m tcp -p tcp --dport 8080 -m state --state NEW -j ACCEPT
+/sbin/iptables -A scotty -m state --state ESTABLISHED,RELATED -j ACCEPT
+/sbin/iptables-save
+
+# Done - print info for starting up
+echo "INFO :: To Run Scotty In Web Browser Type: http://127.0.0.1:8080/scotty/faces/login.xhtml"
+END_POSTINSTALL
+
+%endif
+
+# =-=-=-=-=-=-=-
+# preremove
+# =-=-=-=-=-=-=-
+
+%if RPM
+%preremove << END_PREREMOVE
+# first check to make sure scotty is not logged in.
+USER=$$( who | grep $OS_SCOTTY_ACCT )
+if [ -n "$$USER" ]; then
+  echo "${OS_SCOTTY_ACCT} is currently logged in. Aborting."
+  exit 1
+fi
+
+# stop tomcat if RPM
+RESULT=$$(ps ax | grep -v grep | grep -i $OS_TOMCAT_ACCT )
+if [ -n "$$RESULT" ];
+then
+ echo "INFO :: Stopping Tomcat ..."
+ su -p -s /bin/sh $OS_TOMCAT_ACCT ${TOMCAT_HOME_DIR}/bin/shutdown.sh
+fi
+
+# remove iptables entries related to scotty install
+echo "INFO :: Removing Firewall Access for Scotty ..."
+/sbin/iptables -F scotty
+/sbin/iptables -D INPUT -j scotty
+/sbin/iptables -X scotty
+/sbin/service iptables save
+END_PREREMOVE
+
+%elseif DEB
+%preremove << END_PREREMOVE
+# first check to make sure scotty is not logged in.
+USER=$$( who | grep $OS_SCOTTY_ACCT )
+if [ -n "$$USER" ]; then
+  echo "${OS_SCOTTY_ACCT} is currently logged in. Aborting."
+  exit 1
+fi
+
+# remove iptables entries related to scotty install
+echo "INFO :: Removing Firewall Access for Scotty ..."
+/sbin/iptables -F scotty
+/sbin/iptables -D INPUT -j scotty
+/sbin/iptables -X scotty
+/sbin/iptables-save
+END_PREREMOVE
+
+%endif
+
+# =-=-=-=-=-=-=-
+# postremove
+%if RPM
+%postremove << END_POSTREMOVE
+
+# remove scotty service account
+echo "INFO: :: Removing Scotty Service Account: ${OS_SCOTTY_ACCT} ..."
+USER=$$( grep $OS_SCOTTY_ACCT /etc/passwd )
+if [ -n "$$USER" ];
+then
+ /usr/sbin/userdel -r $OS_SCOTTY_ACCT
+else
+ echo "WARNING :: Service Account: ${OS_SCOTTY_ACCT} Already Removed"
+fi
+
+# clean up tomcat install if this is RPM
+# remove tomcat service account
+echo "INFO: :: Removing Scotty Tomcat Service Account: ${OS_TOMCAT_ACCT} ..."
+USER=$$( grep $OS_TOMCAT_ACCT /etc/passwd )
+if [ -n "$$USER" ];
+then
+ /usr/sbin/userdel -r $OS_TOMCAT_ACCT
+else
+ echo "WARNING :: Service Account: ${OS_TOMCAT_ACCT} Already Removed."
+fi
+END_POSTREMOVE
+
+%elseif DEB
+%postremove << END_POSTREMOVE
+
+# remove scotty service account
+echo "INFO: :: Removing Scotty Service Account: ${OS_SCOTTY_ACCT} ..."
+USER=$$( grep $OS_SCOTTY_ACCT /etc/passwd )
+if [ -n "$$USER" ];
+then
+ /usr/sbin/userdel -r $OS_SCOTTY_ACCT
+else
+ echo "WARNING :: Service Account: ${OS_SCOTTY_ACCT} Already Removed"
+fi
+END_POSTREMOVE
+
+%endif
+
+# =-=-=-=-=-=-=-
+# =-=-=-=-=-=-=-
+# files, and more files...
