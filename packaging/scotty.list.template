@@ -56,7 +56,7 @@ $RPM=true
 # if this is a centos install, use wget to download tomcat 6
 # and install manually # also add a service account for tomcat
 %if RPM
-%preinstall << END_PREINSTALL
+%preinstall << END_PREINSTALL_RPM
 
 #make sure tomcat is not already installed here
 if [ -d "${TOMCAT_HOME_DIR}" ]; then
@@ -97,10 +97,10 @@ else
  /usr/sbin/useradd -m -d ${SCOTTY_HOME_DIR} $OS_SCOTTY_ACCT
  chmod 755 ${SCOTTY_HOME_DIR}
 fi
-END_PREINSTALL
+END_PREINSTALL_RPM
 
 %elseif DEB
-%preinstall << END_PREINSTALL
+%preinstall << END_PREINSTALL_DEB
 # create a service account for scotty 
 # determine if the service account already exists
 USER=$$( grep $OS_SCOTTY_ACCT /etc/passwd )
@@ -113,7 +113,7 @@ else
  /usr/sbin/useradd -m -d ${SCOTTY_HOME_DIR} $OS_SCOTTY_ACCT
  chmod 755 ${SCOTTY_HOME_DIR}
 fi
-END_PREINSTALL
+END_PREINSTALL_DEB
 
 %endif
 
@@ -122,7 +122,7 @@ END_PREINSTALL
 # =-=-=-=-=-=-=-
 
 %if RPM
-%postinstall << END_POSTINSTALL
+%postinstall << END_POSTINSTALL_RPM
 
 # start tomcat
 echo "INFO :: Starting Tomcat ..."
@@ -169,10 +169,10 @@ echo "INFO :: Modifying Firewall For HTTP Port 8080 access ..."
 
 # Done - print info for starting up
 echo "INFO :: To Run Scotty In Web Browser Type: http://127.0.0.1:8080/scotty/faces/logi.xhmtl"
-END_POSTINSTALL
+END_POSTINSTALL_RPM
 
 %elseif DEB
-%postinstall << END_POSTINSTALL
+%postinstall << END_POSTINSTALL_DEB
 
 # if not already running - start tomcat
 RESULT=$$(ps ax | grep -v grep | grep -i tomcat)
@@ -223,7 +223,7 @@ echo "INFO :: Modifying Firewall For HTTP Port 8080 access ..."
 
 # Done - print info for starting up
 echo "INFO :: To Run Scotty In Web Browser Type: http://127.0.0.1:8080/scotty/faces/login.xhtml"
-END_POSTINSTALL
+END_POSTINSTALL_DEB
 
 %endif
 
@@ -232,7 +232,7 @@ END_POSTINSTALL
 # =-=-=-=-=-=-=-
 
 %if RPM
-%preremove << END_PREREMOVE
+%preremove << END_PREREMOVE_RPM
 # first check to make sure scotty is not logged in.
 USER=$$( who | grep $OS_SCOTTY_ACCT )
 if [ -n "$$USER" ]; then
@@ -254,10 +254,10 @@ echo "INFO :: Removing Firewall Access for Scotty ..."
 /sbin/iptables -D INPUT -j scotty
 /sbin/iptables -X scotty
 /sbin/service iptables save
-END_PREREMOVE
+END_PREREMOVE_RPM
 
 %elseif DEB
-%preremove << END_PREREMOVE
+%preremove << END_PREREMOVE_DEB
 # first check to make sure scotty is not logged in.
 USER=$$( who | grep $OS_SCOTTY_ACCT )
 if [ -n "$$USER" ]; then
@@ -271,14 +271,14 @@ echo "INFO :: Removing Firewall Access for Scotty ..."
 /sbin/iptables -D INPUT -j scotty
 /sbin/iptables -X scotty
 /sbin/iptables-save
-END_PREREMOVE
+END_PREREMOVE_DEB
 
 %endif
 
 # =-=-=-=-=-=-=-
 # postremove
 %if RPM
-%postremove << END_POSTREMOVE
+%postremove << END_POSTREMOVE_RPM
 
 # remove scotty service account
 echo "INFO: :: Removing Scotty Service Account: ${OS_SCOTTY_ACCT} ..."
@@ -300,10 +300,10 @@ then
 else
  echo "WARNING :: Service Account: ${OS_TOMCAT_ACCT} Already Removed."
 fi
-END_POSTREMOVE
+END_POSTREMOVE_RPM
 
 %elseif DEB
-%postremove << END_POSTREMOVE
+%postremove << END_POSTREMOVE_DEB
 
 # remove scotty service account
 echo "INFO: :: Removing Scotty Service Account: ${OS_SCOTTY_ACCT} ..."
@@ -314,7 +314,7 @@ then
 else
  echo "WARNING :: Service Account: ${OS_SCOTTY_ACCT} Already Removed"
 fi
-END_POSTREMOVE
+END_POSTREMOVE_DEB
 
 %endif
 
