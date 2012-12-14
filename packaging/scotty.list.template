@@ -190,7 +190,7 @@ if [ -n "$$RESULT" ];
 then
   echo "INFO :: Starting Tomcat ..."
   set +e
-  su -p -s /bin/sh $OS_TOMCAT_ACCT ${TOMCAT_HOME_DIR}/bin/startup.sh
+  /usr/sbin/service ${TOMCAT_ACCT} restart
   set -e
 fi
 
