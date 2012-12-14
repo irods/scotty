@@ -73,7 +73,9 @@ fi
 
 # create a service account for tomcat
 # determine if the service account already exists
+set +e
 USER=$$( grep $OS_TOMCAT_ACCT /etc/passwd )
+set -e
 if [ -n "$$USER" ];
 then
   echo "WARNING :: Service Account $OS_TOMCAT_ACCT Already Exists."
@@ -87,7 +89,9 @@ chown -R $$ACCT:$$ACCT ${TOMCAT_HOME_DIR}
 
 # create a service account for scotty 
 # determine if the service account already exists
+set +e
 USER=$$( grep $OS_SCOTTY_ACCT /etc/passwd )
+set -e
 if [ -n "$$USER" ];
 then
  echo "WARNING :: Service Account $OS_SCOTTY_ACCT Already Exists"
@@ -103,7 +107,9 @@ END_PREINSTALL_RPM
 %preinstall << END_PREINSTALL_DEB
 # create a service account for scotty 
 # determine if the service account already exists
+set +e
 USER=$$( grep $OS_SCOTTY_ACCT /etc/passwd )
+set -e
 if [ -n "$$USER" ];
 then
  echo "WARNING :: Service Account $OS_SCOTTY_ACCT Already Exists"
@@ -175,7 +181,9 @@ END_POSTINSTALL_RPM
 %postinstall << END_POSTINSTALL_DEB
 
 # if not already running - start tomcat
+set +e
 RESULT=$$(ps ax | grep -v grep | grep -i tomcat)
+set -e
 if [ -n "$$RESULT" ];
 then
   echo "INFO :: Starting Tomcat ..."
@@ -234,14 +242,18 @@ END_POSTINSTALL_DEB
 %if RPM
 %preremove << END_PREREMOVE_RPM
 # first check to make sure scotty is not logged in.
+set +e
 USER=$$( who | grep $OS_SCOTTY_ACCT )
+set -e
 if [ -n "$$USER" ]; then
   echo "${OS_SCOTTY_ACCT} is currently logged in. Aborting."
   exit 1
 fi
 
 # stop tomcat if RPM
+set +e
 RESULT=$$(ps ax | grep -v grep | grep -i $OS_TOMCAT_ACCT )
+set -e
 if [ -n "$$RESULT" ];
 then
  echo "INFO :: Stopping Tomcat ..."
@@ -259,7 +271,9 @@ END_PREREMOVE_RPM
 %elseif DEB
 %preremove << END_PREREMOVE_DEB
 # first check to make sure scotty is not logged in.
+set +e
 USER=$$( who | grep $OS_SCOTTY_ACCT )
+set -e
 if [ -n "$$USER" ]; then
   echo "${OS_SCOTTY_ACCT} is currently logged in. Aborting."
   exit 1
@@ -282,7 +296,9 @@ END_PREREMOVE_DEB
 
 # remove scotty service account
 echo "INFO: :: Removing Scotty Service Account: ${OS_SCOTTY_ACCT} ..."
+set +e
 USER=$$( grep $OS_SCOTTY_ACCT /etc/passwd )
+set -e
 if [ -n "$$USER" ];
 then
  /usr/sbin/userdel -r $OS_SCOTTY_ACCT
@@ -293,7 +309,9 @@ fi
 # clean up tomcat install if this is RPM
 # remove tomcat service account
 echo "INFO: :: Removing Scotty Tomcat Service Account: ${OS_TOMCAT_ACCT} ..."
+set +e
 USER=$$( grep $OS_TOMCAT_ACCT /etc/passwd )
+set -e
 if [ -n "$$USER" ];
 then
  /usr/sbin/userdel -r $OS_TOMCAT_ACCT
@@ -307,7 +325,9 @@ END_POSTREMOVE_RPM
 
 # remove scotty service account
 echo "INFO: :: Removing Scotty Service Account: ${OS_SCOTTY_ACCT} ..."
+set +e
 USER=$$( grep $OS_SCOTTY_ACCT /etc/passwd )
+set -e
 if [ -n "$$USER" ];
 then
  /usr/sbin/userdel -r $OS_SCOTTY_ACCT
