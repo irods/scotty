@@ -132,7 +132,9 @@ END_PREINSTALL_DEB
 
 # start tomcat
 echo "INFO :: Starting Tomcat ..."
+set +e
 su -p -s /bin/sh $OS_TOMCAT_ACCT ${TOMCAT_HOME_DIR}/bin/startup.sh
+set -e
 
 # wait until the tomcat conf/Catalina/localhost folder is created
 # or timeout after about 10 seconds
@@ -187,7 +189,9 @@ set -e
 if [ -n "$$RESULT" ];
 then
   echo "INFO :: Starting Tomcat ..."
-  /usr/sbin/service ${TOMCAT_VER} start
+  set +e
+  su -p -s /bin/sh $OS_TOMCAT_ACCT ${TOMCAT_HOME_DIR}/bin/startup.sh
+  set -e
 fi
 
 # wait until the tomcat conf/Catalina/localhost folder is created
