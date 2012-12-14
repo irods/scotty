@@ -22,7 +22,7 @@
 # variables for configuring the install
 # =-=-=-=-=-=-=-
 $OS_SCOTTY_ACCT=scotty
-$OS_SCOTTY_DIR=scotty
+$OS_SCOTTY_DIR=Scotty
 $SCOTTY_HOME_DIR=/var/lib/$OS_SCOTTY_DIR
 
 $TOMCAT_STARTED=false
