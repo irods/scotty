@@ -1,16 +1,23 @@
 package org.irods.scotty.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.irods.jargon.core.pub.EnvironmentalInfoAO;
 import org.irods.jargon.core.pub.IRODSGenQueryExecutor;
 import org.irods.jargon.core.pub.IRODSGenQueryExecutorImpl;
 import org.irods.jargon.core.pub.IRODSFileSystem;
-import org.irods.jargon.core.pub.SimpleQueryExecutorAO;
+import org.irods.jargon.core.pub.SpecificQueryAO;
+import org.irods.jargon.core.pub.domain.SpecificQueryDefinition;
 import org.irods.jargon.core.query.IRODSGenQuery;
 import org.irods.jargon.core.query.IRODSQueryResultSetInterface;
 import org.irods.jargon.core.query.JargonQueryException;
 import org.irods.jargon.core.query.RodsGenQueryEnum;
-import org.irods.jargon.core.query.SimpleQuery;
+import org.irods.jargon.core.query.SpecificQuery;
+import org.irods.jargon.core.query.SpecificQueryResultSet;
 import org.irods.jargon.core.utils.IRODSDataConversionUtil;
 import org.irods.jargon.core.connection.IRODSAccount;
+import org.irods.jargon.core.exception.DataNotFoundException;
 import org.irods.jargon.core.exception.JargonException;
 
 public class GenQueryUtils {
@@ -349,44 +356,6 @@ public class GenQueryUtils {
 
 	}
 	
-	// this does not work yet - keep getting -816000 from irods
-//	public static int countCollectionsWithObjectsUnderZoneWithoutTrash2(
-//			IRODSAccount irodsAccount, IRODSFileSystem irodsFileSystem) throws JargonException {
-//		
-//		if (irodsAccount == null) {
-//			throw new IllegalArgumentException("iRODSAccount is null");
-//		}
-//		String zone = irodsAccount.getZone();
-//		if (zone == null) {
-//			throw new IllegalArgumentException("Zone is null");
-//		}
-//		if (irodsFileSystem == null) {
-//			throw new IllegalArgumentException("iRODSFileSystem is null");
-//		}
-//		
-//		//final String trashPath = "%/trash/home/%";
-//		//final String querySQL = "select count(COLL_ID) from R_DATA_MAIN where DATA_OWNER_ZONE=? and DATA_PATH not like '%/trash/home/%'";
-//		final String querySQL = "select COLL_ID from R_DATA_MAIN where DATA_OWNER_ZONE='tempZone'";
-//		SimpleQueryExecutorAO simpleQueryExecutorAO = irodsFileSystem
-//			.getIRODSAccessObjectFactory().getSimpleQueryExecutorAO(
-//					irodsAccount);
-//
-//		SimpleQuery simpleQuery = SimpleQuery.instanceWithOneArgument(querySQL, zone, 0);
-//		IRODSQueryResultSetInterface resultSet = simpleQueryExecutorAO
-//			.executeSimpleQuery(simpleQuery);
-//
-//		int fileCtr = 0;
-//
-//		if (resultSet.getResults().size() > 0) {
-//			fileCtr = IRODSDataConversionUtil
-//					.getIntOrZeroFromIRODSValue(resultSet.getFirstResult()
-//							.getColumn(0));
-//		}
-//
-//		return fileCtr;
-//	}
-	
-
 	public static int countCollectionsWithObjectsInZone(
 			Boolean inTrash,
 			IRODSAccount irodsAccount,
@@ -404,65 +373,83 @@ public class GenQueryUtils {
 			throw new IllegalArgumentException("iRODSFileSystem is null");
 		}
 
-		final String trashPath = "%/trash/home/%";
-
-		// TODO: This query really needs to have the DISTINCT keyword, but don't know how
-		// to do that yet since iquest (and therefore jargon GenQuery) does not support it
-		// looking into using simple query, but example comment out does not work
-		IRODSGenQueryExecutor irodsGenQueryExecutor = new IRODSGenQueryExecutorImpl(
-				irodsFileSystem.getIrodsSession(), irodsAccount);
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT COUNT(");
-		query.append(RodsGenQueryEnum.COL_D_COLL_ID.getName());
-
-		query.append(") WHERE ");
-		query.append(RodsGenQueryEnum.COL_D_OWNER_ZONE.getName());
-		query.append(" = '");
-		query.append(IRODSDataConversionUtil
-				.escapeSingleQuotes(zone));
-		query.append("'");
-		
-		query.append(" AND ");
-		query.append(RodsGenQueryEnum.COL_D_DATA_PATH.getName());
-		
-		if (inTrash) {
-			query.append(" LIKE '");
-		}
-		else {
-			query.append(" NOT LIKE '");
-		}
-		query.append(IRODSDataConversionUtil
-				.escapeSingleQuotes(trashPath));
-		query.append("'");
-		
-		// add user to query if specified
-		if ( user != null) {
-			query.append(" AND ");
-			query.append(RodsGenQueryEnum.COL_D_OWNER_NAME.getName());
-			query.append(" = '");
-			query.append(IRODSDataConversionUtil
-					.escapeSingleQuotes(user));
-			query.append("'");
-		}
-
-		IRODSGenQuery irodsQuery = IRODSGenQuery.instance(query.toString(), 1);
-		IRODSQueryResultSetInterface resultSet;
-
-		try {
-			resultSet = irodsGenQueryExecutor
-					.executeIRODSQueryAndCloseResultInZone(irodsQuery, 0, zone);
-		} catch (JargonQueryException e) {
-			throw new JargonException(e);
-		}
-
 		int fileCtr = 0;
+		String specificQueryAlias = "showCollectionsWithObjectsInZone";
+		
+		EnvironmentalInfoAO environmentalInfoAO = irodsFileSystem
+				.getIRODSAccessObjectFactory().getEnvironmentalInfoAO(
+						irodsAccount);
+		
+		if (environmentalInfoAO.isAbleToRunSpecificQuery()) {
 
-		if (resultSet.getResults().size() > 0) {
-			fileCtr = IRODSDataConversionUtil
-					.getIntOrZeroFromIRODSValue(resultSet.getFirstResult()
-							.getColumn(0));
+			final String trashPath = "%/trash/home/%";
+			List<String> args = new ArrayList<String>();
+			args.add(zone);
+			args.add(trashPath);
+			
+			StringBuilder query = new StringBuilder();
+			query.append("select count( distinct ");
+			query.append(RodsGenQueryEnum.COL_COLL_ID.getName());
+			
+			query.append(" ) from R_DATA_MAIN ");
+	
+			query.append("where ");
+			query.append(RodsGenQueryEnum.COL_D_OWNER_ZONE.getName());
+			query.append(" = ?");
+			
+			query.append(" and ");
+			query.append(RodsGenQueryEnum.COL_D_DATA_PATH.getName());
+			
+			if (inTrash) {
+				query.append(" like ?");
+				specificQueryAlias += "InTrash";
+			}
+			else {
+				query.append(" not like ?");
+			}
+			
+			// add user to query if specified
+			if ( user != null) {
+				query.append(" and ");
+				query.append(RodsGenQueryEnum.COL_D_OWNER_NAME.getName());
+				query.append(" = ?");
+				
+				specificQueryAlias += "WithUser";
+				args.add(user);
+			}
+			
+			// first look to see if this specific query has already been created
+			SpecificQueryAO queryAO = irodsFileSystem.getIRODSAccessObjectFactory()
+					.getSpecificQueryAO(irodsAccount);
+			
+			// if this specific query does not exist, create it
+			SpecificQueryDefinition specificQueryDef = null;
+			try {
+				specificQueryDef = queryAO.findSpecificQueryByAlias(specificQueryAlias);
+			} catch(DataNotFoundException ex) {
+				specificQueryDef = new SpecificQueryDefinition(specificQueryAlias, query.toString());
+				queryAO.addSpecificQuery(specificQueryDef);
+			}
+
+			// now run it
+			SpecificQuery specificQuery = SpecificQuery.instanceArguments(specificQueryAlias, args, 0);
+			SpecificQueryResultSet specificQueryResultSet = null;;
+			try {
+				specificQueryResultSet = queryAO.executeSpecificQueryUsingAlias(specificQuery, 1);
+			} catch (DataNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return 0;
+			} catch (JargonQueryException e) {
+				throw new JargonException(e);
+			}
+			
+			if (specificQueryResultSet.getResults().size() > 0) {
+				fileCtr = IRODSDataConversionUtil
+						.getIntOrZeroFromIRODSValue(specificQueryResultSet.getFirstResult().getColumn(0));
+			}
 		}
-
+		
 		return fileCtr;
 
 	}
