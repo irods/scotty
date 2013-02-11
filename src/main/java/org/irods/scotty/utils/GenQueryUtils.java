@@ -373,7 +373,7 @@ public class GenQueryUtils {
 			throw new IllegalArgumentException("iRODSFileSystem is null");
 		}
 
-		int fileCtr = 0;
+		int fileCtr = -1;
 		String specificQueryAlias = "showCollectionsWithObjectsInZone";
 		
 		EnvironmentalInfoAO environmentalInfoAO = irodsFileSystem

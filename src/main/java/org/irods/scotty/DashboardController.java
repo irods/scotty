@@ -37,12 +37,14 @@ public class DashboardController implements Serializable {
 	private Integer numberOfDataObjectsInZone;
 	private Integer numberOfDataObjectsInZoneWithoutTrash;
 	private Integer numberOfCollectionsInZoneWithoutTrash;
-	private Integer numberOfCollectionsWithObjectsInZoneWithoutTrash;
+	//>>>>>private Integer numberOfCollectionsWithObjectsInZoneWithoutTrash;
+	private String numberOfCollectionsWithObjectsInZoneWithoutTrash;
 	private Long sizeOfDataObjectsInZoneWithoutTrash;
 	private Integer numberOfDataObjectsInZoneInTrash;
 	private Long sizeOfDataObjectsInZoneInTrash;
 	private Integer numberOfCollectionsInZoneInTrash;
-	private Integer numberOfCollectionsWithObjectsInZoneInTrash;
+	//>>>>private Integer numberOfCollectionsWithObjectsInZoneInTrash;
+	private String numberOfCollectionsWithObjectsInZoneInTrash;
 	private String zonePath;
 	private List<User> users;
 	private List<User> usersInZone;
@@ -50,11 +52,13 @@ public class DashboardController implements Serializable {
 	private Integer numberOfDataObjectsInZoneForUserWithoutTrash;
 	private Long sizeOfDataObjectsInZoneForUserWithoutTrash;
 	private Integer numberOfCollectionsInZoneForUserWithoutTrash;
-	private Integer numberOfCollectionsWithObjectsInZoneForUserWithoutTrash;
+	//>>>>private Integer numberOfCollectionsWithObjectsInZoneForUserWithoutTrash;
+	private String numberOfCollectionsWithObjectsInZoneForUserWithoutTrash;
 	private Integer numberOfDataObjectsInZoneForUserInTrash;
 	private Long sizeOfDataObjectsInZoneForUserInTrash;
 	private Integer numberOfCollectionsInZoneForUserInTrash;
-	private Integer numberOfCollectionsWithObjectsInZoneForUserInTrash;
+	//>>>>private Integer numberOfCollectionsWithObjectsInZoneForUserInTrash;
+	private String numberOfCollectionsWithObjectsInZoneForUserInTrash;
 	private List<Resource> resources;
 	private List<Resource> resourcesInZone;
 	private String selectedResource;
@@ -394,16 +398,22 @@ public class DashboardController implements Serializable {
 		return count;
 	}
 	
-	public Integer getNumberOfCollectionsWithObjectsInZoneWithoutTrash() {
+	//public Integer getNumberOfCollectionsWithObjectsInZoneWithoutTrash() {
+	public String getNumberOfCollectionsWithObjectsInZoneWithoutTrash() {
+		String scount = "N/A";
 		Integer count = 0;
 		try {
 			count = GenQueryUtils.countCollectionsWithObjectsInZone(false, loginInfo.getIRODSAccount(),
 					loginInfo.getIRODSFileSystem(), null);
+			if (count >= 0) {
+				scount = Integer.toString(count);
+			}
 		} catch (JargonException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return count;
+		//return count;
+		return scount;
 	}
 	
 	public Integer getNumberOfDataObjectsInZoneInTrash() {
@@ -443,16 +453,22 @@ public class DashboardController implements Serializable {
 		return count;
 	}
 	
-	public Integer getNumberOfCollectionsWithObjectsInZoneInTrash() {
+	//public Integer getNumberOfCollectionsWithObjectsInZoneInTrash() {
+	public String getNumberOfCollectionsWithObjectsInZoneInTrash() {
+		String scount = "N/A";
 		Integer count = 0;
 		try {
 			count = GenQueryUtils.countCollectionsWithObjectsInZone(true, loginInfo.getIRODSAccount(),
 					loginInfo.getIRODSFileSystem(), null);
+			if (count >= 0) {
+				scount = Integer.toString(count);
+			}
 		} catch (JargonException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return count;
+		//return count;
+		return scount;
 	}
 	
 	public Integer getNumberOfDataObjectsInZoneForUserWithoutTrash() {
@@ -492,16 +508,22 @@ public class DashboardController implements Serializable {
 		return count;
 	}
 	
-	public Integer getNumberOfCollectionsWithObjectsInZoneForUserWithoutTrash() {
+	//public Integer getNumberOfCollectionsWithObjectsInZoneForUserWithoutTrash() {
+	public String getNumberOfCollectionsWithObjectsInZoneForUserWithoutTrash() {
+		String scount = "N/A";
 		Integer count = 0;
 		try {
 			count = GenQueryUtils.countCollectionsWithObjectsInZone(false, loginInfo.getIRODSAccount(),
 					loginInfo.getIRODSFileSystem(), getSelectedUser());
+			if (count >= 0) {
+				scount = Integer.toString(count);
+			}
 		} catch (JargonException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return count;
+		//return count;
+		return scount;
 	}
 	
 	public Integer getNumberOfDataObjectsInZoneForUserInTrash() {
@@ -541,16 +563,22 @@ public class DashboardController implements Serializable {
 		return count;
 	}
 	
-	public Integer getNumberOfCollectionsWithObjectsInZoneForUserInTrash() {
+	//public Integer getNumberOfCollectionsWithObjectsInZoneForUserInTrash() {
+	public String getNumberOfCollectionsWithObjectsInZoneForUserInTrash() {
+		String scount = "N/A";
 		Integer count = 0;
 		try {
 			count = GenQueryUtils.countCollectionsWithObjectsInZone(true, loginInfo.getIRODSAccount(),
 					loginInfo.getIRODSFileSystem(), getSelectedUser());
+			if (count >= 0) {
+				scount = Integer.toString(count);
+			}
 		} catch (JargonException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return count;
+		//return count;
+		return scount;
 	}
 	
 	public Integer getNumberOfDataObjectsInZoneForResourceWithoutTrash() {
