@@ -20,65 +20,69 @@
 					<p:messages id="messages" showSummary="true" showDetail="false" autoUpdate="true"/>
 			</h:panelGrid>
         </div>
+	<p:spacer height="20" width="0"/>
     	<h:commandButton value="#{msg['user.button.create']}" action="#{userController.goToCreateUser}"></h:commandButton>
-    	<h:dataTable value="#{userController.adminUsersList}" var="user">
-    		<f:facet name="caption">iRODS Admin Users</f:facet>
-    		<h:column>
+	<p:spacer height="20" width="0"/>
+    	<p:dataTable value="#{userController.adminUsersList}" var="user">
+    		<f:facet name="header">iRODS Admin Users</f:facet>
+    		<p:column>
     			<f:facet name="header">Id</f:facet>
     			#{user.id}
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<f:facet name="header">Login</f:facet>
     			#{user.name}
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<f:facet name="header">Zone</f:facet>
     			#{user.zone}
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<f:facet name="header">Create Time</f:facet>
     			<h:outputText value="#{user.createTime}">
     				<f:convertDateTime pattern="M/d/yyyy h:mm:ss aaa"/>
     			</h:outputText>
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<h:commandButton value="#{msg['user.button.update']}" action="#{userController.goToUpdateAdminUser}"></h:commandButton>
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<h:commandButton value="#{msg['user.button.remove']}" action="#{userController.doRemoveAdminUser}"
     				onclick="if (!confirm('Are you sure you wish to remove user: &quot;#{user.name}&quot;?')) return false;"
     				rendered="#{user.name ne loginController.name}"></h:commandButton>
-    		</h:column>
-    	</h:dataTable>
+    		</p:column>
+    	</p:dataTable>
     	
-    	<h:dataTable value="#{userController.rodsUsersList}" var="ruser">
-    		<f:facet name="caption">iRODS Users</f:facet>
-    		<h:column>
+	<p:spacer height="30" width="0"/>
+
+    	<p:dataTable value="#{userController.rodsUsersList}" var="ruser">
+    		<f:facet name="header">iRODS Users</f:facet>
+    		<p:column>
     			<f:facet name="header">Id</f:facet>
     			#{ruser.id}
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<f:facet name="header">Login</f:facet>
     			#{ruser.name}
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<f:facet name="header">Zone</f:facet>
     			#{ruser.zone}
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<f:facet name="header">Create Time</f:facet>
     			<h:outputText value="#{ruser.createTime}">
     				<f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss"/>
     			</h:outputText>
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<h:commandButton value="#{msg['user.button.update']}" action="#{userController.goToUpdateRodsUser}"></h:commandButton>
-    		</h:column>
-    		<h:column>
+    		</p:column>
+    		<p:column>
     			<h:commandButton value="#{msg['user.button.remove']}" action="#{userController.doRemoveRodsUser}"
     			onclick="if (!confirm('Are you sure you wish to remove user: &quot;#{ruser.name}&quot;?')) return false;"></h:commandButton>
-    		</h:column>
-    	</h:dataTable>
+    		</p:column>
+    	</p:dataTable>
     </h:form>
     </ui:define>
 </ui:composition>

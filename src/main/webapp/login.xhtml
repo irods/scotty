@@ -40,6 +40,7 @@
                 <p:password value="#{loginController.password}" required="true"/>
                 
             </h:panelGrid>
+	    <p:spacer height="25" width="0"/>
             <h:commandButton value="#{msg['login.button.login']}" action="#{loginController.validateUser}"/>
             
         </h:form>

@@ -16,6 +16,7 @@ import org.irods.jargon.core.pub.IRODSAccessObjectFactory;
 import org.irods.jargon.core.pub.IRODSFileSystem;
 import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.domain.User;
+import org.irods.scotty.utils.Version;
 /**
  * This is the backing bean for the login page (login.xthml)
  * It is session scoped since it contains the login credentials needed for
@@ -50,8 +51,12 @@ public class LoginController implements Serializable {
     private String headerMsg = "Not Logged In";
     private String loginErrorMsg;
     private Boolean loginAuthenticated = false;
+    private String scottyVersion;
+    private String jargonVersion;
+    private String buildDate;
 
     public LoginController() {
+	collectVersionInfo();
     }
         
 
@@ -149,6 +154,36 @@ public class LoginController implements Serializable {
     public String getLoginErrorMsg() {
     	return this.loginErrorMsg;
     }
+
+
+    public String getScottyVersion() {
+	return scottyVersion;
+    }
+
+
+    public void setScottyVersion(String scottyVersion) {
+	this.scottyVersion = scottyVersion;
+    }
+
+
+    public String getJargonVersion() {
+	return jargonVersion;
+    }
+
+
+    public void setJargonVersion(String jargonVersion) {
+	this.jargonVersion = jargonVersion;
+    }
+
+
+    public String getBuildDate() {
+	return buildDate;
+    }
+
+
+	public void setBuildDate(String buildDate) {
+		this.buildDate = buildDate;
+	}
     
     
     private void resetLoginCredentials() {
@@ -271,6 +306,13 @@ public class LoginController implements Serializable {
         }
 
         return outcome;
+    }
+
+
+    private void collectVersionInfo() {
+    	setScottyVersion(Version.VERSION);
+    	setJargonVersion(Version.JARGON_VERSION);
+    	setBuildDate(Version.BUILD_TIME);
     }
 
 }

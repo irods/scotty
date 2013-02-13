@@ -14,8 +14,9 @@
 <ui:composition template="/WEB-INF/templates/site.xhtml">
     <ui:define name="content">
     <h:form>
+	<p:spacer height="20" width="0"/>
     	<p:dataTable value="#{resourcesController.allResourcesList}" var="resc">
-    		<f:facet name="caption">iRODS Resources List</f:facet>
+    		<f:facet name="header">iRODS Resources List</f:facet>
     		<p:column sortBy="#{resc.id}">
     			<f:facet name="header">Id</f:facet>
     			#{resc.id}
