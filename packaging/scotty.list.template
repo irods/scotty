@@ -22,7 +22,7 @@
 # variables for configuring the install
 # =-=-=-=-=-=-=-
 $OS_SCOTTY_ACCT=scotty
-$OS_SCOTTY_DIR=Scotty
+$OS_SCOTTY_DIR=scotty
 $SCOTTY_HOME_DIR=/var/lib/$OS_SCOTTY_DIR
 
 $TOMCAT_STARTED=false
@@ -176,7 +176,7 @@ echo "INFO :: Modifying Firewall For HTTP Port 8080 access ..."
 /sbin/service iptables save
 
 # Done - print info for starting up
-echo "INFO :: To Run Scotty In Web Browser Type: http://127.0.0.1:8080/Scotty"
+echo "INFO :: To Run Scotty In Web Browser Type: http://127.0.0.1:8080/scotty"
 END_POSTINSTALL_RPM
 
 %elseif DEB

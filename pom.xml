@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.irods.scotty</groupId>
-  <artifactId>Scotty</artifactId>
+  <artifactId>scotty</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>Scotty Maven Webapp</name>
@@ -113,7 +113,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>Scotty</finalName>
+    <finalName>scotty</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

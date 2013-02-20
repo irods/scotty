@@ -115,22 +115,22 @@ fi
 
 echo "Creating Package ..."
 cd $PACKAGEDIR
-if [ -d $PACKAGEDIR/Scotty ]; then
-  rm -rf $PACKAGEDIR/Scotty
+if [ -d $PACKAGEDIR/scotty ]; then
+  rm -rf $PACKAGEDIR/scotty
 fi
 
 if [ -f $PACKAGEDIR/scotty.list ]; then
   rm $PACKAGEDIR/scotty.list
 fi
 
-mkdir $PACKAGEDIR/Scotty
-cd $PACKAGEDIR/Scotty
-cp $BUILDDIR/target/Scotty.war .
-unzip Scotty.war
-rm Scotty.war
+mkdir $PACKAGEDIR/scotty
+cd $PACKAGEDIR/scotty
+cp $BUILDDIR/target/scotty.war .
+unzip scotty.war
+rm scotty.war
 
 cd $PACKAGEDIR
-$PACKAGEDIR/epm/mkepmlist -u scotty -g scotty --prefix /var/lib/Scotty Scotty > scotty.list
+$PACKAGEDIR/epm/mkepmlist -u scotty -g scotty --prefix /var/lib/scotty scotty > scotty.list
 sed 's/\$/$$/g' scotty.list > tmp.list
 cat scotty.list.template tmp.list > scotty.list
 rm tmp.list
