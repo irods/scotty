@@ -33,7 +33,7 @@ public class DashboardController implements Serializable {
 	private Integer numberOfRodsUsers;
 	private Integer numberOfUsers;
 	private Integer numberOfResources;
-	private Integer numberOfResourcesInZone;
+	//private Integer numberOfResourcesInZone;
 	//private Integer numberOfDataObjectsInZone;
 	private Integer numberOfDataObjectsInZoneIncludingTrash;
 	private Integer numberOfCollectionsInZoneIncludingTrash;
@@ -42,7 +42,6 @@ public class DashboardController implements Serializable {
 	private Integer numberOfDataObjectsInZoneInTrash;
 	private Long sizeOfDataObjectsInZoneInTrash;
 	private Integer numberOfCollectionsInZoneInTrash;
-	//>>>>private Integer numberOfCollectionsWithObjectsInZoneInTrash;
 	private String numberOfCollectionsWithObjectsInZoneInTrash;
 	private String zonePath;
 	private List<User> users;
@@ -51,15 +50,13 @@ public class DashboardController implements Serializable {
 	private Integer numberOfDataObjectsInZoneForUserIncludingTrash;
 	private Long sizeOfDataObjectsInZoneForUserIncludingTrash;
 	private Integer numberOfCollectionsInZoneForUserIncludingTrash;
-	//>>>>private Integer numberOfCollectionsWithObjectsInZoneForUserIncludingTrash;
 	private String numberOfCollectionsWithObjectsInZoneForUserIncludingTrash;
 	private Integer numberOfDataObjectsInZoneForUserInTrash;
 	private Long sizeOfDataObjectsInZoneForUserInTrash;
 	private Integer numberOfCollectionsInZoneForUserInTrash;
-	//>>>>private Integer numberOfCollectionsWithObjectsInZoneForUserInTrash;
 	private String numberOfCollectionsWithObjectsInZoneForUserInTrash;
 	private List<Resource> resources;
-	private List<Resource> resourcesInZone;
+	//private List<Resource> resourcesInZone;
 	private String selectedResource;
 	private Integer numberOfDataObjectsInZoneForResourceIncludingTrash;
 	private Long sizeOfDataObjectsInZoneForResourceIncludingTrash;
@@ -255,13 +252,27 @@ public class DashboardController implements Serializable {
 	    	try {
 	    		accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
 				ResourceAO resourceAO = accessObjectFactory.getResourceAO(irodsAccount);
-				setResources(resourceAO.findAll()); 
+				//List<Resource> resources = resourceAO.findAll();
+				List<Resource> resources = resourceAO.listResourcesInZone(loginInfo.getZone());
+				
+				// now get rid of bundleResc
+				int idx = 0;
+				for (Resource r: resources) {
+					if (r.getName().equals("bundleResc")) {
+						resources.remove(idx);
+					}
+				}
+				
+				setResources(resources); 
 	    	} catch (JargonException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
 				irodsFileSystem.closeAndEatExceptions();
 			}
+		}
+		if (this.resources.size() > 0) {
+			setSelectedResource(this.resources.get(0).getName());
 		}
     	
     	return this.resources;
@@ -291,36 +302,36 @@ public class DashboardController implements Serializable {
 		this.numberOfResources = numberOfResources;
 	}
 	
-	public List<Resource> getResourcesInZone() {
-		
-		if (this.resourcesInZone == null) {
-			IRODSAccessObjectFactory accessObjectFactory;
-			
-			// get iRODS access info from LoginController bean and use to get
-			// Jargon Resource Access Object
-			IRODSAccount irodsAccount = loginInfo.getIRODSAccount();
-			IRODSFileSystem irodsFileSystem = loginInfo.getIRODSFileSystem();
-	    	try {
-	    		accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
-				ResourceAO resourceAO = accessObjectFactory.getResourceAO(irodsAccount);
-				setResourcesInZone(resourceAO.listResourcesInZone(loginInfo.getZone())); 
-	    	} catch (JargonException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				irodsFileSystem.closeAndEatExceptions();
-			}
-		}
-		if (this.resourcesInZone.size() > 0) {
-			setSelectedResource(this.resourcesInZone.get(0).getName());
-		}
-    	
-    	return this.resourcesInZone;
-	}
-	
-	public void setResourcesInZone(List<Resource> resources) {
-		this.resourcesInZone = resources;
-	}
+//	public List<Resource> getResourcesInZone() {
+//		
+//		if (this.resourcesInZone == null) {
+//			IRODSAccessObjectFactory accessObjectFactory;
+//			
+//			// get iRODS access info from LoginController bean and use to get
+//			// Jargon Resource Access Object
+//			IRODSAccount irodsAccount = loginInfo.getIRODSAccount();
+//			IRODSFileSystem irodsFileSystem = loginInfo.getIRODSFileSystem();
+//	    	try {
+//	    		accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
+//				ResourceAO resourceAO = accessObjectFactory.getResourceAO(irodsAccount);
+//				setResourcesInZone(resourceAO.listResourcesInZone(loginInfo.getZone())); 
+//	    	} catch (JargonException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} finally {
+//				irodsFileSystem.closeAndEatExceptions();
+//			}
+//		}
+//		if (this.resourcesInZone.size() > 0) {
+//			setSelectedResource(this.resourcesInZone.get(0).getName());
+//		}
+//    	
+//    	return this.resourcesInZone;
+//	}
+//	
+//	public void setResourcesInZone(List<Resource> resources) {
+//		this.resourcesInZone = resources;
+//	}
 	
 	/** 
 	 * retrieve a count of the total number of resources associated with this grid
@@ -328,20 +339,20 @@ public class DashboardController implements Serializable {
 	 * 
 	 * @return <code>Integer</code> representing total count of resources for this zone
 	 */
-	public Integer getNumberOfResourcesInZone() {
-		
-		if (this.resourcesInZone == null) {
-			getResourcesInZone();
-		}
-		
-		int number = this.resourcesInZone.size();
-		setNumberOfResourcesInZone(number);
-		return number;
-	}
-	
-	public void setNumberOfResourcesInZone(Integer numberOfResourcesInZone) {
-		this.numberOfResourcesInZone = numberOfResourcesInZone;
-	}
+//	public Integer getNumberOfResourcesInZone() {
+//		
+//		if (this.resourcesInZone == null) {
+//			getResourcesInZone();
+//		}
+//		
+//		int number = this.resourcesInZone.size();
+//		setNumberOfResourcesInZone(number);
+//		return number;
+//	}
+//	
+//	public void setNumberOfResourcesInZone(Integer numberOfResourcesInZone) {
+//		this.numberOfResourcesInZone = numberOfResourcesInZone;
+//	}
 	
 	public Long getSizeOfDataObjectsInZoneIncludingTrash() {
 		Long size = (long) 0;

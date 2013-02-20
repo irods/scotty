@@ -50,21 +50,11 @@
 	   					<h:graphicImage name="media_disk.png" library="images"></h:graphicImage>
 	   				</h:link>
 	   			</p:column>
-	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfResourcesInZone}" />
-	   			</p:column>
-	   			<p:column>
-	   				<h:outputLabel>iRODS<p:spacer width="2"/></h:outputLabel>
-	   				<h:link value="Resources" outcome="resource_admin" />
-	   				<h:outputLabel><p:spacer width="2"/>in this Zone<p:spacer width="2"/></h:outputLabel>
-	   			</p:column>
-	   		</p:row>
-	   		<p:row>
-	   			<p:column>
+	   			<p:column rowspan="2">
 	   				<h:outputText value="#{dashboardController.numberOfResources}" />
 	   			</p:column>
-	   			<p:column>
-	   				<h:outputLabel>Total iRODS<p:spacer width="2"/></h:outputLabel>
+	   			<p:column rowspan="2">
+	   				<h:outputLabel>iRODS<p:spacer width="2"/></h:outputLabel>
 	   				<h:link value="Resources" outcome="resource_admin" />
 	   			</p:column>
 	   		</p:row>
@@ -263,7 +253,7 @@
 	   	<h:panelGrid>
 	   		<h:outputLabel id="rescLabel">Per Resource (#{dashboardController.selectedResource}) Zone Statistics</h:outputLabel>
         	<h:selectOneListbox id="resourceListBox" value="#{dashboardController.selectedResource}" size="1">
-            	<f:selectItems value="#{dashboardController.resourcesInZone}" var="resc" itemValue="#{resc.name}"/>
+            	<f:selectItems value="#{dashboardController.resources}" var="resc" itemValue="#{resc.name}"/>
                 <f:ajax event="change" execute="@this userListBox" render="rescLabel rescStuff userANDrescStuff"></f:ajax>
             </h:selectOneListbox>
             <p:panelGrid id="rescStuff">

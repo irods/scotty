@@ -58,7 +58,17 @@ public class ResourcesController implements Serializable {
 				accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
 				ResourceAO resourceAO = accessObjectFactory.getResourceAO(irodsAccount);
 				// set resource list
-				this.allResourcesList = resourceAO.findAll();
+				//this.allResourcesList = resourceAO.findAll();
+				resources = resourceAO.listResourcesInZone(loginInfo.getZone());
+				
+				// now get rid of bundleResc
+				int idx = 0;
+				for (Resource r: resources) {
+					if (r.getName().equals("bundleResc")) {
+						resources.remove(idx);
+					}
+				}
+				this.allResourcesList = resources;
 			} catch (JargonException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
