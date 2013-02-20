@@ -78,7 +78,7 @@
 	   				<h:graphicImage name="folder.png" library="images"></h:graphicImage>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
@@ -88,32 +88,32 @@
 	   		</p:row>
 	   		<p:row>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone</h:outputLabel>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone (including Trash)</h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfCollectionsInZoneWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsInZoneIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>iRODS Collections in this Zone<p:spacer width="2"/></h:outputLabel>
+	   				<h:outputLabel>iRODS Collections in this Zone (including Trash)<p:spacer width="2"/></h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfCollectionsWithObjectsInZoneWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsWithObjectsInZoneIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>iRODS Collections in this Zone containing Data Objects<p:spacer width="2"/></h:outputLabel>
+	   				<h:outputLabel>iRODS Collections in this Zone containing Data Objects (including Trash)<p:spacer width="2"/></h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
@@ -175,42 +175,42 @@
 	   				<h:graphicImage name="folder.png" library="images"></h:graphicImage>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForUserWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForUserIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>iRODS Files in this Zone for this User</h:outputLabel>
+	   				<h:outputLabel>iRODS Files in this Zone for this User (including Trash)</h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForUserWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForUserIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone for this User</h:outputLabel>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone for this User (including Trash)</h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfCollectionsInZoneForUserWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsInZoneForUserIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>iRODS Collections in this Zone for this User</h:outputLabel>
+	   				<h:outputLabel>iRODS Collections in this Zone for this User (including Trash)</h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfCollectionsWithObjectsInZoneForUserWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.numberOfCollectionsWithObjectsInZoneForUserIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>iRODS Collections in this Zone containing Data Objects for this User</h:outputLabel>
+	   				<h:outputLabel>iRODS Collections in this Zone containing Data Objects for this User (including Trash)</h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
@@ -272,22 +272,22 @@
 	   				<h:graphicImage name="folder.png" library="images"></h:graphicImage>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForResourceWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForResourceIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>iRODS Files in this Zone for this Resource</h:outputLabel>
+	   				<h:outputLabel>iRODS Files in this Zone for this Resource (including Trash)</h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForResourceWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForResourceIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone for this Resource</h:outputLabel>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone for this Resource (including Trash)</h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
@@ -325,22 +325,22 @@
 	   				<h:graphicImage name="folder.png" library="images"></h:graphicImage>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForUserForResourceWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.numberOfDataObjectsInZoneForUserForResourceIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>iRODS Files in this Zone for this User and Resource</h:outputLabel>
+	   				<h:outputLabel>iRODS Files in this Zone for this User and Resource (including Trash)</h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
 	   			<p:column>
-	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForUserForResourceWithoutTrash}">
+	   				<h:outputText value="#{dashboardController.sizeOfDataObjectsInZoneForUserForResourceIncludingTrash}">
 	   					<f:convertNumber pattern="###,###" />
 	   				</h:outputText>
 	   			</p:column>
 	   			<p:column>
-	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone for this User and Resource</h:outputLabel>
+	   				<h:outputLabel>Total Size (bytes) of iRODS Files in this Zone for this User and Resource (including Trash)</h:outputLabel>
 	   			</p:column>
 	   		</p:row>
 	   		<p:row>
