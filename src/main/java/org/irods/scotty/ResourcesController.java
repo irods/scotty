@@ -67,6 +67,7 @@ public class ResourcesController implements Serializable {
 					if (r.getName().equals("bundleResc")) {
 						resources.remove(idx);
 					}
+					idx++;
 				}
 				this.allResourcesList = resources;
 			} catch (JargonException e) {

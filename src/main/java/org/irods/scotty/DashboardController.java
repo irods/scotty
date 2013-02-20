@@ -261,6 +261,7 @@ public class DashboardController implements Serializable {
 					if (r.getName().equals("bundleResc")) {
 						resources.remove(idx);
 					}
+					idx++;
 				}
 				
 				setResources(resources); 
