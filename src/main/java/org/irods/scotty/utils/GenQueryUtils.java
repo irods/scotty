@@ -42,6 +42,7 @@ public class GenQueryUtils {
 		}
 
 		final String trashPath = "%/trash/home/%";
+		final String zonePath = "/" + zone + "/%";
 
 		IRODSGenQueryExecutor irodsGenQueryExecutor = new IRODSGenQueryExecutorImpl(
 				irodsFileSystem.getIrodsSession(), irodsAccount);
@@ -51,24 +52,25 @@ public class GenQueryUtils {
 		query.append(RodsGenQueryEnum.COL_DATA_SIZE.getName());
 
 		query.append(") WHERE ");
-		query.append(RodsGenQueryEnum.COL_D_OWNER_ZONE.getName());
-		query.append(" = '");
+		
+		// specify the zone by zone path - cannot use COL_D_OWNER_ZONE here because data objects
+		// in this zone could be owned by users in federated zones
+		//query.append(RodsGenQueryEnum.COL_D_DATA_PATH.getName());
+		query.append(RodsGenQueryEnum.COL_COLL_NAME.getName());
+		query.append(" LIKE '");
 		query.append(IRODSDataConversionUtil
-				.escapeSingleQuotes(zone));
+				.escapeSingleQuotes(zonePath));
 		query.append("'");
 		
-		query.append(" AND ");
-		query.append(RodsGenQueryEnum.COL_D_DATA_PATH.getName());
-		
+		// just count data objects in this zone that are in the trash		
 		if (inTrash) {
+			query.append(" AND ");
+			query.append(RodsGenQueryEnum.COL_COLL_NAME.getName());
 			query.append(" LIKE '");
+			query.append(IRODSDataConversionUtil
+					.escapeSingleQuotes(trashPath));
+			query.append("'");
 		}
-		else {
-			query.append(" NOT LIKE '");
-		}
-		query.append(IRODSDataConversionUtil
-				.escapeSingleQuotes(trashPath));
-		query.append("'");
 		
 		// add user to query if specified
 		if ( user != null) {
@@ -112,19 +114,19 @@ public class GenQueryUtils {
 
 	}
 	
-	public static int countTotalDataObjectsInZone(
-			IRODSAccount irodsAccount, IRODSFileSystem irodsFileSystem) throws JargonException {
-
-		if (irodsAccount == null) {
-			throw new IllegalArgumentException("iRODSAccount is null");
-		}
-		String zone = irodsAccount.getZone();
-		if (zone == null) {
-			throw new IllegalArgumentException("Zone is null");
-		}
-		if (irodsFileSystem == null) {
-			throw new IllegalArgumentException("iRODSFileSystem is null");
-		}
+//	public static int countTotalDataObjectsInZone(
+//			IRODSAccount irodsAccount, IRODSFileSystem irodsFileSystem) throws JargonException {
+//
+//		if (irodsAccount == null) {
+//			throw new IllegalArgumentException("iRODSAccount is null");
+//		}
+//		String zone = irodsAccount.getZone();
+//		if (zone == null) {
+//			throw new IllegalArgumentException("Zone is null");
+//		}
+//		if (irodsFileSystem == null) {
+//			throw new IllegalArgumentException("iRODSFileSystem is null");
+//		}
 
 //		ObjStat objStat = retrieveObjectStatForPath(absolutePathToParent);
 
@@ -153,42 +155,42 @@ public class GenQueryUtils {
 //					"attempting to count children under a file at path:"
 //							+ absolutePathToParent);
 //		}
-
-		IRODSGenQueryExecutor irodsGenQueryExecutor = new IRODSGenQueryExecutorImpl(
-				irodsFileSystem.getIrodsSession(), irodsAccount);
-
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT COUNT(");
-		query.append(RodsGenQueryEnum.COL_DATA_NAME.getName());
-
-		query.append(") WHERE ");
-		query.append(RodsGenQueryEnum.COL_D_OWNER_ZONE.getName());
-		query.append(" = '");
-		query.append(IRODSDataConversionUtil
-				.escapeSingleQuotes(zone));
-		query.append("'");
-
-		IRODSGenQuery irodsQuery = IRODSGenQuery.instance(query.toString(), 1);
-		IRODSQueryResultSetInterface resultSet;
-
-		try {
-			resultSet = irodsGenQueryExecutor
-					.executeIRODSQueryAndCloseResultInZone(irodsQuery, 0, zone);
-		} catch (JargonQueryException e) {
-			throw new JargonException(e);
-		}
-
-		int fileCtr = 0;
-
-		if (resultSet.getResults().size() > 0) {
-			fileCtr = IRODSDataConversionUtil
-					.getIntOrZeroFromIRODSValue(resultSet.getFirstResult()
-							.getColumn(0));
-		}
-
-		return fileCtr;
-
-	}
+//
+//		IRODSGenQueryExecutor irodsGenQueryExecutor = new IRODSGenQueryExecutorImpl(
+//				irodsFileSystem.getIrodsSession(), irodsAccount);
+//
+//		StringBuilder query = new StringBuilder();
+//		query.append("SELECT COUNT(");
+//		query.append(RodsGenQueryEnum.COL_DATA_NAME.getName());
+//
+//		query.append(") WHERE ");
+//		query.append(RodsGenQueryEnum.COL_D_OWNER_ZONE.getName());
+//		query.append(" = '");
+//		query.append(IRODSDataConversionUtil
+//				.escapeSingleQuotes(zone));
+//		query.append("'");
+//
+//		IRODSGenQuery irodsQuery = IRODSGenQuery.instance(query.toString(), 1);
+//		IRODSQueryResultSetInterface resultSet;
+//
+//		try {
+//			resultSet = irodsGenQueryExecutor
+//					.executeIRODSQueryAndCloseResultInZone(irodsQuery, 0, zone);
+//		} catch (JargonQueryException e) {
+//			throw new JargonException(e);
+//		}
+//
+//		int fileCtr = 0;
+//
+//		if (resultSet.getResults().size() > 0) {
+//			fileCtr = IRODSDataConversionUtil
+//					.getIntOrZeroFromIRODSValue(resultSet.getFirstResult()
+//							.getColumn(0));
+//		}
+//
+//		return fileCtr;
+//
+//	}
 	
 	public static int countDataObjectsInZone(
 			Boolean inTrash,
@@ -208,7 +210,8 @@ public class GenQueryUtils {
 			throw new IllegalArgumentException("iRODSFileSystem is null");
 		}
 
-		final String trashPath = "%/trash/home/%";
+		final String trashPath = "/" + zone + "/trash/home/%";
+		final String zonePath = "/" + zone + "/%";
 
 		IRODSGenQueryExecutor irodsGenQueryExecutor = new IRODSGenQueryExecutorImpl(
 				irodsFileSystem.getIrodsSession(), irodsAccount);
@@ -218,24 +221,24 @@ public class GenQueryUtils {
 		query.append(RodsGenQueryEnum.COL_DATA_NAME.getName());
 
 		query.append(") WHERE ");
-		query.append(RodsGenQueryEnum.COL_D_OWNER_ZONE.getName());
-		query.append(" = '");
+		
+		// specify the zone by zone path - cannot use COL_D_OWNER_ZONE here because data objects
+		// in this zone could be owned by users in federated zones
+		query.append(RodsGenQueryEnum.COL_COLL_NAME.getName());		
+		query.append(" LIKE '");
 		query.append(IRODSDataConversionUtil
-				.escapeSingleQuotes(zone));
+				.escapeSingleQuotes(zonePath));
 		query.append("'");
 		
-		query.append(" AND ");
-		query.append(RodsGenQueryEnum.COL_D_DATA_PATH.getName());
-		
+		// just count data objects in this zone that are in the trash		
 		if (inTrash) {
+			query.append(" AND ");
+			query.append(RodsGenQueryEnum.COL_COLL_NAME.getName());
 			query.append(" LIKE '");
+			query.append(IRODSDataConversionUtil
+					.escapeSingleQuotes(trashPath));
+			query.append("'");
 		}
-		else {
-			query.append(" NOT LIKE '");
-		}
-		query.append(IRODSDataConversionUtil
-				.escapeSingleQuotes(trashPath));
-		query.append("'");
 		
 		// add user to query if specified
 		if ( user != null) {
@@ -296,33 +299,35 @@ public class GenQueryUtils {
 			throw new IllegalArgumentException("iRODSFileSystem is null");
 		}
 
-		final String trashPath = "%/" + zone + "/trash%";
+		final String trashPath = "/" + zone + "/trash/home/%";
+		final String zonePath = "/" + zone + "/%";
 
 		IRODSGenQueryExecutor irodsGenQueryExecutor = new IRODSGenQueryExecutorImpl(
 				irodsFileSystem.getIrodsSession(), irodsAccount);
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT COUNT(");
 		query.append(RodsGenQueryEnum.COL_COLL_NAME.getName());
-
+		
 		query.append(") WHERE ");
-		query.append(RodsGenQueryEnum.COL_COLL_OWNER_ZONE.getName());
-		query.append(" = '");
+
+		// specify the zone by zone path - cannot use COL_D_OWNER_ZONE here because collections
+		// in this zone could be owned by users in federated zones
+		query.append(RodsGenQueryEnum.COL_COLL_NAME.getName());		
+		query.append(" LIKE '");
 		query.append(IRODSDataConversionUtil
-				.escapeSingleQuotes(zone));
+				.escapeSingleQuotes(zonePath));
 		query.append("'");
 		
-		query.append(" AND ");
-		query.append(RodsGenQueryEnum.COL_COLL_NAME.getName());
-		
+		// just count collections in this zone that are in the trash
 		if (inTrash) {
+			query.append(" AND ");
+			query.append(RodsGenQueryEnum.COL_COLL_NAME.getName());
 			query.append(" LIKE '");
+			query.append(IRODSDataConversionUtil
+					.escapeSingleQuotes(trashPath));
+			query.append("'");
 		}
-		else {
-			query.append(" NOT LIKE '");
-		}
-		query.append(IRODSDataConversionUtil
-				.escapeSingleQuotes(trashPath));
-		query.append("'");
+
 		
 		// add user to query if specified
 		if ( user != null) {
@@ -383,36 +388,28 @@ public class GenQueryUtils {
 		if (environmentalInfoAO.isAbleToRunSpecificQuery()) {
 
 			final String trashPath = "%/trash/home/%";
+			final String zonePath = "/" + zone + "/%";
+			
 			List<String> args = new ArrayList<String>();
-			args.add(zone);
-			args.add(trashPath);
+			args.add(zonePath);
 			
 			StringBuilder query = new StringBuilder();
-			query.append("select count( distinct ");
-			query.append(RodsGenQueryEnum.COL_COLL_ID.getName());
-			
-			query.append(" ) from R_DATA_MAIN ");
-	
-			query.append("where ");
-			query.append(RodsGenQueryEnum.COL_D_OWNER_ZONE.getName());
-			query.append(" = ?");
-			
-			query.append(" and ");
-			query.append(RodsGenQueryEnum.COL_D_DATA_PATH.getName());
-			
+			query.append("select count(distinct R_DATA_MAIN.coll_id ) from R_COLL_MAIN,R_DATA_MAIN ");
+			query.append("where R_DATA_MAIN.coll_id = R_COLL_MAIN.coll_id ");
+			// specify the zone by zone path - cannot use COL_D_OWNER_ZONE here because collections
+			// in this zone could be owned by users in federated zones
+			query.append("and R_COLL_MAIN.coll_name like ?");
+				
 			if (inTrash) {
-				query.append(" like ?");
+				query.append(" and R_COLL_MAIN.coll_name like ?");
+				
 				specificQueryAlias += "InTrash";
-			}
-			else {
-				query.append(" not like ?");
+				args.add(trashPath);
 			}
 			
 			// add user to query if specified
 			if ( user != null) {
-				query.append(" and ");
-				query.append(RodsGenQueryEnum.COL_D_OWNER_NAME.getName());
-				query.append(" = ?");
+				query.append(" and  R_COLL_MAIN.coll_owner_name = ?");
 				
 				specificQueryAlias += "WithUser";
 				args.add(user);
@@ -453,6 +450,4 @@ public class GenQueryUtils {
 		return fileCtr;
 
 	}
-
-
 }
