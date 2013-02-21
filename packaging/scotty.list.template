@@ -234,7 +234,7 @@ echo "INFO :: Modifying Firewall For HTTP Port 8080 access ..."
 /sbin/iptables-save
 
 # Done - print info for starting up
-echo "INFO :: To Run Scotty In Web Browser Type: http://127.0.0.1:8080/Scotty"
+echo "INFO :: To Run Scotty In Web Browser Type: http://127.0.0.1:8080/scotty"
 END_POSTINSTALL_DEB
 
 %endif
