@@ -125,7 +125,7 @@ public class DashboardController implements Serializable {
 		return this.selectedUser;
 	}
 	
-	public void setSelectedUser(String user) {
+	public synchronized void setSelectedUser(String user) {
 		this.selectedUser = user;
 	}
 
@@ -236,7 +236,7 @@ public class DashboardController implements Serializable {
 		return this.selectedResource;
 	}
 	
-	public void setSelectedResource(String resource) {
+	public synchronized void setSelectedResource(String resource) {
 		this.selectedResource = resource;
 	}
 	
