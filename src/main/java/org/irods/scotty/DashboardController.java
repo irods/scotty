@@ -125,7 +125,7 @@ public class DashboardController implements Serializable {
 		return this.selectedUser;
 	}
 	
-	public synchronized void setSelectedUser(String user) {
+	public void setSelectedUser(String user) {
 		this.selectedUser = user;
 	}
 
@@ -236,7 +236,7 @@ public class DashboardController implements Serializable {
 		return this.selectedResource;
 	}
 	
-	public synchronized void setSelectedResource(String resource) {
+	public void setSelectedResource(String resource) {
 		this.selectedResource = resource;
 	}
 	
@@ -260,6 +260,7 @@ public class DashboardController implements Serializable {
 				for (Resource r: resources) {
 					if (r.getName().equals("bundleResc")) {
 						resources.remove(idx);
+						break;
 					}
 					idx++;
 				}

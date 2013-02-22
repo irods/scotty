@@ -66,6 +66,7 @@ public class ResourcesController implements Serializable {
 				for (Resource r: resources) {
 					if (r.getName().equals("bundleResc")) {
 						resources.remove(idx);
+						break;
 					}
 					idx++;
 				}
