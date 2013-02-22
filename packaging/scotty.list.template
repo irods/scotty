@@ -1,10 +1,10 @@
 %product iRODS System Administration
-%copyright Any copyright here.
-%vendor Data Intensive Cyberinfrastructure Foundation, Renaissance Computing Institute
-%license COPYING
+%copyright 2012 by Renaissance Computing Institute, All Rights Reserved.
+%vendor Renaissance Computing Institute  <info@eirods.org>
+%license LICENSE
 %readme README
 %description Web Based Interface for iRODS Administration
-%version 0.0.1 100001
+%version 1.0b1 100001
 
 # don't think http is actually needed
 # %requires httpd 2
