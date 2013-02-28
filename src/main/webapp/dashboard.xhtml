@@ -13,10 +13,15 @@
 		
 	<ui:define name="content">
 	 <h:form>
-		<h:panelGrid>
-	    Here is a placeholder for the Administration Dashboard which will display information metrics such as this:
+	    <p:spacer height="10"/>
+	    <h:panelGrid>
+	    	<h:outputText style="width:100%;font-family:'Avenir Lt Std Roman'; font-size:24px;line-height:36px;background-color:lightgray;color:#2694a5" value="iRODS Server Availabilty: #{dashboardController.serverAvailabilityPercentage}" />
 	    </h:panelGrid>
 	    <p:spacer height="10"/>
+	    <h:panelGrid>
+	    	<p:graphicImage value="#{dashboardController.gridGraphic}" />
+	    </h:panelGrid>
+	    <p:spacer height="20"/>
 	    <p:panelGrid>
 	    	<p:row>
 	    		<p:column rowspan="2">

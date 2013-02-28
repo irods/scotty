@@ -16,7 +16,13 @@ import org.irods.jargon.core.pub.UserAO;
 import org.irods.jargon.core.pub.domain.Resource;
 import org.irods.jargon.core.pub.domain.User;
 import org.irods.jargon.core.query.CollectionAndDataObjectListingEntry;
+import org.irods.scotty.graphviz.DotGridGraphic;
+import org.irods.scotty.graphviz.GraphViz;
+import org.irods.scotty.metrics.GuinanMetrics;
+import org.irods.scotty.metrics.IrodsServerMetrics;
+import org.irods.scotty.metrics.TimeSeriesMetric;
 import org.irods.scotty.utils.GenQueryUtils;
+import org.primefaces.model.StreamedContent;
 
 /**
  * DashboardController is the backing bean for the iRODS Admin Dashboard 
@@ -70,6 +76,8 @@ public class DashboardController implements Serializable {
 	private Long sizeOfDataObjectsInZoneForUserForResourceIncludingTrash;
 	private Integer numberOfDataObjectsInZoneForUserForResourceInTrash;
 	private Long sizeOfDataObjectsInZoneForUserForResourceInTrash;
+	private String serverAvailabilityPercentage;
+	private StreamedContent gridGraphic;
 
 	public DashboardController() {
 
@@ -691,6 +699,46 @@ public class DashboardController implements Serializable {
 	
 		return size;
 	}
+	
+	public String getServerAvailabilityPercentage() {
+		String percentage = "N/A";
+		
+		if (this.serverAvailabilityPercentage == null) {
+			// get iRODS access info from LoginController bean and use to get
+			// Jargon Resource Access Object
+			IRODSAccount irodsAccount = loginInfo.getIRODSAccount();
+			IRODSFileSystem irodsFileSystem = loginInfo.getIRODSFileSystem();
+
+			GuinanMetrics guinanMetrics = new GuinanMetrics(irodsAccount, irodsFileSystem);
+			TimeSeriesMetric timeSeriesMetric = guinanMetrics.getNamedMetric("IrodsStatus");
+			if (timeSeriesMetric != null) {
+				IrodsServerMetrics ism = new IrodsServerMetrics(timeSeriesMetric);
+				double rate = ism.getServerUpTimePercentage();
+				percentage = String.valueOf(rate) + " %";
+			}
+		}
+		
+		this.serverAvailabilityPercentage = percentage;
+		return this.serverAvailabilityPercentage;
+	}
+	
+	public StreamedContent getGridGraphic() {
+		
+		if (this.gridGraphic == null) {
+			String type = "gif";
+			IRODSAccount irodsAccount = loginInfo.getIRODSAccount();
+			IRODSFileSystem irodsFileSystem = loginInfo.getIRODSFileSystem();
+        
+			GraphViz gv = new GraphViz();
+			DotGridGraphic dotGridGraphic = new DotGridGraphic(irodsAccount, irodsFileSystem);
+			String dotSrc = dotGridGraphic.getGridDotSource();
+			StreamedContent graphic = gv.getStreamedContent(dotSrc, type);
+			this.gridGraphic = graphic;
+		}
+	    
+	    return this.gridGraphic;
+	}
+
 	
 //	public Integer getNumberOfCollectionsInZoneForResourceIncludingTrash() {
 //	Integer count = 0;
