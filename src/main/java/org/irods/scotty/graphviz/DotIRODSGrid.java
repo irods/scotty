@@ -11,6 +11,8 @@ public class DotIRODSGrid {
 	private String nodeFillColor = "white";
 	private String style = "filled";
 	private String fillColor = "#2694a5";
+	private String iCatShape = "ellipse";
+	private String labelSubTextColor = "#5b5b5b";
 	private String host;
 	private String zone;
 	private int port;
@@ -54,18 +56,41 @@ public class DotIRODSGrid {
 		dotSource.append("\n");
 		
 		// assemble label
-		dotSource.append("label=\"iRODS Host: ");
-		dotSource.append(host);
-		dotSource.append(", Port: ");
+		dotSource.append("label=\"Port: ");
 		dotSource.append(port);
 		dotSource.append(", Zone: ");
 		dotSource.append(zone);
 		dotSource.append("\";");
 		dotSource.append("\n");
 		
+		// iCAT settings
+		dotSource.append("iCAT [shape=\"");
+		dotSource.append(iCatShape);
+		dotSource.append("\", label=<iCAT<br/><font color=\"");
+		dotSource.append(labelSubTextColor);
+		dotSource.append("\">");
+		dotSource.append(host);
+		dotSource.append("</font>>];");
+		dotSource.append("\n");
+		
 		// now setup any local resources
 		for (Resource resource: localResources) {
 			String rescName = resource.getName();
+			String rescHost = resource.getLocation();
+			
+			// setup resource label - name and location
+			dotSource.append("\"");
+			dotSource.append(rescName);
+			dotSource.append("\" [label=<");
+			dotSource.append(rescName);
+			dotSource.append("<br/><font color=\"");
+			dotSource.append(labelSubTextColor);
+			dotSource.append("\">");
+			dotSource.append(rescHost);
+			dotSource.append("</font>>];");
+			dotSource.append("\n");
+			
+			// create edge
 			dotSource.append("iCAT -> \"");
 			dotSource.append(rescName);
 			dotSource.append("\";");

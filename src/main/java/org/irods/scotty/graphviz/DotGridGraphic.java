@@ -21,6 +21,9 @@ public class DotGridGraphic {
 	private int port;
 	private String fillColor = "gray80";
 	private String style = "filled";
+	// allow edges between clusters and define inter-object spacing
+	private String diGraphSettings = "compound=true;\nnodesep=.5;\nranksep=1;\n";
+	public static String homeZoneClusterName = "cluster_home_zone";
 	
 	public DotGridGraphic(IRODSAccount irodsAccount, IRODSFileSystem irodsFileSystem) {
 		this.irodsAccount = irodsAccount;
@@ -37,12 +40,12 @@ public class DotGridGraphic {
 		dotSource.append("digraph irods {");
 		dotSource.append("\n");
 		
-		dotSource.append("size=\"10,20\";"); // HOW FORMAT THIS BETTER
-		dotSource.append("\n");
-//		dotSource.append("ratio=3;");
-//		dotSource.append("\n");
+		// digraph settings
+		dotSource.append(diGraphSettings);
 		
-		dotSource.append("subgraph cluster_all {");
+		dotSource.append("subgraph ");
+		dotSource.append(homeZoneClusterName);
+		dotSource.append(" {");
 		dotSource.append("\n");
 		dotSource.append("fillcolor=");
 		dotSource.append(fillColor);
@@ -53,7 +56,8 @@ public class DotGridGraphic {
 		dotSource.append(";");
 		dotSource.append("\n");
 		
-		DotIRODSGrid irodsGrid = new DotIRODSGrid(host, port, zone, getLocalResources());
+		//DotIRODSGrid irodsGrid = new DotIRODSGrid(host, port, zone, getLocalResources());
+		DotIRODSGrid irodsGrid = new DotIRODSGrid(host, port, zone, getAllResources());
 		dotSource.append(irodsGrid.getICATDotSource());
 		
 		// close cluster_all
@@ -147,6 +151,32 @@ public class DotGridGraphic {
 			irodsFileSystem.closeAndEatExceptions();
 			return resources;
 		}
-	}	
+	}
+	
+	// returns null if none are found
+	// screen out bundleResc
+	private List<Resource> getAllResources() {
+		List<Resource> resources = new ArrayList<Resource>();
+		IRODSAccessObjectFactory accessObjectFactory;
+		
+		// get iRODS access info from LoginController bean and use to get
+		// Jargon User Access Object
+    	try {
+    		accessObjectFactory = irodsFileSystem.getIRODSAccessObjectFactory();
+			ResourceAO resourceAO = accessObjectFactory.getResourceAO(irodsAccount);
+			List<Resource> tmpResources = resourceAO.findAll();
+			for (Resource resource: tmpResources) {
+				if (! resource.getName().equals("bundleResc")) {
+					resources.add(resource);
+				}
+			}
+    	} catch (JargonException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			irodsFileSystem.closeAndEatExceptions();
+			return resources;
+		}
+	}
 
 }
