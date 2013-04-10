@@ -82,8 +82,8 @@ private static String TEMP_DIR = "/tmp";	// Linux
 /**
  * Where is your dot program located? It will be called externally.
  */
-private static String DOT = "/usr/local/bin/dot"; // Mac OS
-//private static String DOT = "/usr/bin/dot";	// Linux
+//private static String DOT = "/usr/local/bin/dot"; // Mac OS
+private static String DOT = "/usr/bin/dot";	// Linux
 //private static String DOT = "c:/Program Files/Graphviz2.26.3/bin/dot.exe";	// Windows
 
 /**
