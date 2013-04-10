@@ -53,6 +53,7 @@ html, body {
    font-style: italic;
    font-family: Palatino;
    text-align: center;
+   width: 100%;
 }
 
 .taskImage {
