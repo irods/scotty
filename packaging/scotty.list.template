@@ -4,7 +4,7 @@
 %license LICENSE
 %readme README
 %description Web Based Interface for iRODS Administration
-%version 1.0b1 100001
+%version 1.0b2 100002
 
 # don't think http is actually needed
 # %requires httpd 2
