@@ -1,5 +1,6 @@
 package org.irods.scotty;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -729,7 +730,16 @@ public class DashboardController implements Serializable {
 			IRODSAccount irodsAccount = loginInfo.getIRODSAccount();
 			IRODSFileSystem irodsFileSystem = loginInfo.getIRODSFileSystem();
         
-			GraphViz gv = new GraphViz();
+			GraphViz gv = null;;
+			try {
+				gv = new GraphViz();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			DotGridGraphic dotGridGraphic = new DotGridGraphic(irodsAccount, irodsFileSystem);
 			String dotSrc = dotGridGraphic.getGridDotSource();
 			StreamedContent graphic = gv.getStreamedContent(dotSrc, type);

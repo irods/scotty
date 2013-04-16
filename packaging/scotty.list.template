@@ -12,10 +12,10 @@
 %if DEB
 %requires tomcat7
 %requires openjdk-6-jre
-%requires graphviz
 %else
 %requires java 6
 %endif
+%requires graphviz
 
 %format all
 

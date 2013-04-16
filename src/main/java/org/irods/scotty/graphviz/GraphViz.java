@@ -31,11 +31,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ByteArrayInputStream;
 
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.DefaultStreamedContent; 
+import org.slf4j.LoggerFactory;
 
 /**
 * <dl>
@@ -82,20 +84,28 @@ private static String TEMP_DIR = "/tmp";	// Linux
 /**
  * Where is your dot program located? It will be called externally.
  */
+private String DOT;
 //private static String DOT = "/usr/local/bin/dot"; // Mac OS
-private static String DOT = "/usr/bin/dot";	// Linux
+//private static String DOT = "/usr/bin/dot";	// Linux
 //private static String DOT = "c:/Program Files/Graphviz2.26.3/bin/dot.exe";	// Windows
 
 /**
  * The source of the graph written in dot language.
  */
 	private StringBuilder graph = new StringBuilder();
+	
+/**
+ * logger
+ */
+	private static final org.slf4j.Logger log = LoggerFactory.getLogger(GraphViz.class);
 
 /**
  * Constructor: creates a new GraphViz object that will contain
  * a graph.
+ * @throws IOException 
  */
-public GraphViz() {
+public GraphViz() throws IOException, InterruptedException {
+	DOT = getDotPath();
 }
 
 /**
@@ -297,6 +307,28 @@ public void readSource(String input)
 	   }
 	   
 	   this.graph = sb;
+}
+
+// find dot command on unix type os using which command
+// windows not supported yet
+private String getDotPath() throws IOException, InterruptedException {
+	
+	String fullPath = null;
+	String[] env = {"PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"};
+	String[] args = {"/usr/bin/which", "dot"};
+	
+	Runtime rt = Runtime.getRuntime();	
+	Process p = rt.exec(args, env);
+	p.waitFor();
+	
+    BufferedReader stdInput = new BufferedReader(new 
+         InputStreamReader(p.getInputStream()));
+    
+    fullPath = stdInput.readLine();
+
+    log.debug("dot command full path is: " + fullPath);
+	
+	return fullPath;
 }
 
 } // end of class GraphViz
