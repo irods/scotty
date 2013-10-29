@@ -8,7 +8,7 @@
 SCRIPTNAME=`basename $0`
 
 # in case we need to download maven
-MAVENVER=3.0.4
+MAVENVER=3.0.5
 MAVENFILE=apache-maven-$MAVENVER
 MAVENDOWNLOAD=http://apache.cs.utah.edu/maven/maven-3/$MAVENVER/binaries/$MAVENFILE-bin.zip
 
